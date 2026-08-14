@@ -78378,12 +78378,35 @@
   }
   ε༠︍.ιߐ̍(600, 30000, 5000);
   ι̂ܝ.ιߐ̍(30, 15000, 2000, 3, 60000, 10000, і̴̋, ﾠ٤ܐ, ⲅࠄ‌);
-  // ========== SADSAA MOD v5 (FIXED FOR FILE 2 API) ==========
+
+
+function WaitANDrunHTML() {
+    α६๑ = ᴌе︀ && document[α̉๖]("nickname") !== null && document[α̉๖]("terms") !== null && document[α̉๖]("serverList") !== null && document[ⲟ̏ނ]("changelog") !== null && document[α̉๖]("howtoplay") !== null && document[ᴏ‍̈]("featuredVideo") !== null && document[ⲟ̏ނ]("bebebaba") !== null && document[ᴏ‍̈]("preroll") !== null && document[ᴏ‍̈]("footer") !== null && document[α̉๖]("chat") !== null;
+    if (α६๑ === true) {
+      home.init();
+      game.init();
+      ϲɑ๑.init();
+      ԁ́ࡉ.init();
+      ⲣࠁ９.init();
+      ϲᴎ︂.init();
+      ᴉࡁ๑.еߋ๒(home, ㅤ̖٠, "can", "bod", 1280, undefined, true);
+      home.run();
+    } else {
+      setTimeout(WaitANDrunHTML, 100);
+    }
+  }
+  ;
+  ㅤᄅᴀ[ο༩ࠄ] = function () {
+    if (ࡀܓ̸[state] & ࡀܓ̸.State.__CONNECTED__) {
+      return "Are you sure you want quit?";
+    }
+  };
+  WaitANDrunHTML();
+  // ========== SADSAA MOD PORTED TO V2 ==========
 (function() {
-    "use strict";
     try {
-        // === 1. АДАПТАЦИЯ ПОД НОВОЕ API ===
-        var sendPacket = function(data) {
+        // 1. Адаптация API под Файл 2
+        var _send = function(data) {
             try {
                 if (typeof ᴉ︄ߓ !== "undefined" && typeof ᴉ︄ߓ.ㅤ̡ߓ === "function") {
                     var p = Array.isArray(data) ? JSON.stringify(data) : data;
@@ -78394,50 +78417,48 @@
             return false;
         };
 
-        var getPlayers = function() {
+        var _getPlayers = function() {
             try {
-                // В v2 игроки хранятся в Entitie.ⲥ༨ߊ["εߊ١"] или в ρ༩ᴇ
-                if (typeof Entitie !== "undefined" && Entitie["ⲥ༨ߊ"] && Entitie["ⲥ༨ߊ"]["εߊ١"]) 
-                    return Entitie["ⲥ༨ߊ"]["εߊ١"];
-                if (typeof ρ༩ᴇ !== "undefined" && ρ༩ᴇ.players) return ρ༩ᴇ.players;
+                if (typeof ρ༩ᴇ !== "undefined" && ρ༩ᴇ.regions) return ρ༩ᴇ.regions;
+                if (typeof Entitie !== "undefined" && Entitie["ⲥ༨ߊ"] && Entitie["ⲥ༨ߊ"]["εߊ١"]) return Entitie["ⲥ༨ߊ"]["εߊ١"];
             } catch(e) {}
             return null;
         };
 
-        var getNick = function(obj) {
-            if (!obj) return "";
-            try {
-                if (obj["ᴑᄇᏧ"]) return String(obj["ᴑᄇᏧ"]);
-                if (obj.nickname) return String(obj.nickname);
-            } catch(e) {}
+        var _getNick = function(o) {
+            if (!o) return "";
+            try { if (o["ᴑᄇᏧ"]) return String(o["ᴑᄇᏧ"]); } catch(e) {}
+            try { if (o.nickname) return String(o.nickname); } catch(e) {}
             return "";
         };
 
-        // === 2. КОНФИГУРАЦИЯ ===
-        var MOD = {
-            FAutoLootEnabled: false, AutoBuildEnabled: false,
-            OpenEverythingByClick: true, SpamChatEnabled: false, SpamChatText: "hello",
-            PlayersListEnabled: false, PlayerId: "", hit: true, zoom: 0,
-            _lastLoot: 0, _lastBuild: 0
+        // 2. Конфигурация (без изменений)
+        var SADSAA_MOD = {
+            FAutoLootEnabled: false, FAutoLootKey: "KeyQ",
+            AutoBuildEnabled: false, AutoBuildKey: "KeyB",
+            _lastBuild: 0, _lastLoot: 0, zoom: 0,
+            OpenEverythingByClick: true,
+            SpamChatEnabled: false, SpamChatText: "hello",
+            PlayersListEnabled: false, PlayersListKey: "KeyL",
+            PlayerId: "", hit: true, ModMenuKey: "KeyH"
         };
-        var _spamIv = null, _plOverlay = null, _mouse = {x:0,y:0};
+        var _spamIv = null, _plOv = null, _mouse = {x:0,y:0};
 
         document.addEventListener("mousemove", function(e) { _mouse.x=e.clientX; _mouse.y=e.clientY; }, true);
 
-        // === 3. ЛОГИКА ===
-        function netSend(arr) {
-            if (!MOD.hit && arr && (arr[0]===4 || arr[0]==="4")) return;
-            sendPacket(arr);
+        // 3. Сетевые функции
+        function NetSend(arr) {
+            if (!SADSAA_MOD.hit && arr && (arr[0]===4 || arr[0]==="4")) return;
+            _send(arr);
         }
 
-        // Хук атаки
-        (function hookAttack() {
+        function HookAttack() {
             try {
                 if (typeof ᴉ︄ߓ === "undefined" || !ᴉ︄ߓ.ㅤ̡ߓ || ᴉ︄ߓ.ㅤ̡ߓ.__hooked) return;
                 var orig = ᴉ︄ߓ.ㅤ̡ߓ;
                 ᴉ︄ߓ.ㅤ̡ߓ = function(p) {
                     try {
-                        if (!MOD.hit) {
+                        if (!SADSAA_MOD.hit) {
                             var d = p;
                             if (typeof p === "string") try { d = JSON.parse(p); } catch(e){}
                             if (d && (d[0]===4 || d[0]==="4")) return;
@@ -78447,188 +78468,137 @@
                 };
                 ᴉ︄ߓ.ㅤ̡ߓ.__hooked = true;
             } catch(e){}
-        })();
+        }
+        setInterval(HookAttack, 500);
+        HookAttack();
 
-        // RMB Open
+        // 4. RMB Open (Упрощено для стабильности v2)
         document.addEventListener("mousedown", function(e) {
-            if (e.button === 2 && MOD.OpenEverythingByClick) {
-                MOD.hit = false;
-                // Упрощенный open: отправляем пакет [12, lootId] если есть
-                // Полноценный raycast в v2 требует доступа к камере, которой нет в глобале
+            if (e.button === 2 && SADSAA_MOD.OpenEverythingByClick) {
+                SADSAA_MOD.hit = false;
                 e.preventDefault();
+                // В v2 точный raycast требует доступа к камере, которой нет в глобале
+                // Оставляем хук для безопасности
             }
         }, true);
-        document.addEventListener("mouseup", function(e) { if (e.button===2) MOD.hit=true; }, true);
-        document.addEventListener("contextmenu", function(e) { if (MOD.OpenEverythingByClick) e.preventDefault(); }, true);
+        document.addEventListener("mouseup", function(e) { if (e.button===2) SADSAA_MOD.hit=true; }, true);
+        document.addEventListener("contextmenu", function(e) { if (SADSAA_MOD.OpenEverythingByClick) e.preventDefault(); }, true);
 
-        // Spam Chat
-        function toggleSpam() {
-            if (MOD.SpamChatEnabled) {
+        // 5. Чат и Никнеймы
+        function SendChat(msg) { if(msg) _send([1, msg]); }
+        
+        function ToggleSpam() {
+            if (SADSAA_MOD.SpamChatEnabled) {
                 if (_spamIv) clearInterval(_spamIv);
-                sendPacket([1, MOD.SpamChatText]);
-                _spamIv = setInterval(function(){ sendPacket([1, MOD.SpamChatText]); }, 5000);
+                SendChat(SADSAA_MOD.SpamChatText);
+                _spamIv = setInterval(function(){ SendChat(SADSAA_MOD.SpamChatText); }, 5000);
             } else {
                 if (_spamIv) { clearInterval(_spamIv); _spamIv=null; }
             }
         }
 
-        // Copy Nicknames (ИСПРАВЛЕНО)
-        function copyNick(idStr) {
+        function CopyNick(idStr) {
             try {
-                var pls = getPlayers();
+                var pls = _getPlayers();
                 if (!pls) { alert("Players not loaded"); return; }
                 var p = pls[parseInt(idStr,10)];
                 if (!p) { alert("Player not found"); return; }
-                var n = getNick(p).split("#")[0];
+                var n = _getNick(p).split("#")[0];
                 if (n) { alert(n); navigator.clipboard.writeText(n); }
                 else alert("No nick");
             } catch(e) { alert("Error"); }
         }
 
-        function copyAllNicks() {
+        function CopyAllNicks() {
             try {
-                var pls = getPlayers(), res=[];
+                var pls = _getPlayers(), res=[];
                 if (!pls) { alert("No players"); return; }
-                for (var k in pls) { var n=getNick(pls[k]).replace(/#\d+$/,""); if(n) res.push(n); }
+                for (var k in pls) { var n=_getNick(pls[k]).replace(/#\d+$/,""); if(n) res.push(n); }
                 if (res.length) { navigator.clipboard.writeText(res.join("\n")); alert("Copied "+res.length); }
                 else alert("Empty");
             } catch(e) { alert("Error"); }
         }
 
-        // Player List Overlay
+        // 6. Список игроков
         setInterval(function() {
             try {
-                if (!_plOverlay) {
-                    _plOverlay = document.createElement("div");
-                    _plOverlay.style.cssText = "position:fixed;inset:0;z-index:999998;background:rgba(0,0,0,0.6);color:#fff;font:13px Arial;overflow:auto;display:none;padding:20px;pointer-events:none;";
-                    document.body.appendChild(_plOverlay);
+                if (!_plOv) {
+                    _plOv = document.createElement("div");
+                    _plOv.style.cssText = "position:fixed;inset:0;z-index:999998;background:rgba(0,0,0,0.55);color:#fff;font:13px Viga,Arial,sans-serif;overflow:auto;display:none;padding:16px 20px;pointer-events:none;";
+                    document.body.appendChild(_plOv);
                 }
-                _plOverlay.style.display = MOD.PlayersListEnabled ? "block" : "none";
-                if (!MOD.PlayersListEnabled) return;
-
-                var pls = getPlayers(), rows=[], c=0;
+                _plOv.style.display = SADSAA_MOD.PlayersListEnabled ? "block" : "none";
+                if (!SADSAA_MOD.PlayersListEnabled) return;
+                
+                var pls = _getPlayers(), rows=[], c=0;
                 if (pls) {
                     for (var k in pls) {
-                        var n = getNick(pls[k]);
+                        var n = _getNick(pls[k]);
                         if (n) { rows.push("<div>#"+k+" "+n.replace(/</g,"&lt;")+"</div>"); c++; }
                     }
                 }
-                _plOverlay.innerHTML = "<div style='text-align:right;margin-bottom:10px'>Players: "+c+"</div>" + rows.join("");
+                _plOv.innerHTML = "<div style='text-align:right;margin-bottom:10px'>People On Server: "+c+"</div><div style='display:flex;flex-wrap:wrap;gap:6px 22px'>"+rows.join("")+"</div>";
             } catch(e){}
-        }, 500);
+        }, 400);
 
-        // Zoom (ИСПРАВЛЕНО ДЛЯ V2: ᴎࡃ̈.ᴎԁс)
-        function applyZoom(dir) {
+        // 7. Зум (Адаптировано под ᴎࡃ̈.ᴎԁс)
+        function ApplyZoom(dir) {
             try {
-                if (typeof ᴎࡃ̈ === "undefined" || typeof ᴎࡃ̈.ᴎԁс !== "number") return;
-                var z = ᴎࡃ̈.ᴎԁс + (dir > 0 ? 0.1 : -0.1);
-                ᴎࡃ̈.ᴎԁс = Math.max(-1, Math.min(1, z));
-                MOD.zoom = ᴎࡃ̈.ᴎԁс;
+                var zObj = (typeof ᴎࡃ̈ !== "undefined") ? ᴎࡃ̈ : null;
+                if (!zObj || typeof zObj.ᴎԁс !== "number") return;
+                var z = zObj.ᴎԁс + (dir > 0 ? 0.1 : -0.1);
+                zObj.ᴎԁс = Math.max(-1, Math.min(1, z));
+                SADSAA_MOD.zoom = zObj.ᴎԁс;
             } catch(e){}
         }
 
-        // Ticks
+        // 8. Тики и Клавиши
         setInterval(function() {
             try {
-                // Sync zoom
-                if (typeof ᴎࡃ̈ !== "undefined" && typeof ᴎࡃ̈.ᴎԁс === "number") MOD.zoom = ᴎࡃ̈.ᴎԁс;
-                
-                // AutoLoot stub (требует бинарного парсинга в v2)
-                if (MOD.FAutoLootEnabled) { /* TODO: requires binary packet parsing */ }
-                
-                // AutoBuild stub
-                if (MOD.AutoBuildEnabled) { /* TODO: requires slot state access */ }
+                if (typeof ᴎࡃ̈ !== "undefined" && typeof ᴎࡃ̈.ᴎԁс === "number") SADSAA_MOD.zoom = ᴎࡃ̈.ᴎԁс;
+                // AutoLoot/Build заглушки (требуют бинарного парсинга в v2)
             } catch(e){}
-        }, 50);
+        }, 25);
 
-        // Keys
         window.addEventListener("keydown", function(e) {
-            if (e.code==="Equal"||e.code==="NumpadAdd") { applyZoom(1); return; }
-            if (e.code==="Minus"||e.code==="NumpadSubtract") { applyZoom(-1); return; }
+            if (e.code==="Equal"||e.code==="NumpadAdd") { ApplyZoom(1); return; }
+            if (e.code==="Minus"||e.code==="NumpadSubtract") { ApplyZoom(-1); return; }
             if (e.repeat || e.target.tagName==="INPUT" || e.target.tagName==="TEXTAREA") return;
-            if (e.code==="KeyQ") { MOD.FAutoLootEnabled=!MOD.FAutoLootEnabled; console.log("[SADSAA] Loot:",MOD.FAutoLootEnabled); }
-            if (e.code==="KeyB") { MOD.AutoBuildEnabled=!MOD.AutoBuildEnabled; console.log("[SADSAA] Build:",MOD.AutoBuildEnabled); }
-            if (e.code==="KeyL") { MOD.PlayersListEnabled=!MOD.PlayersListEnabled; }
-            if (e.code==="KeyH") { try{var g=document.querySelector(".dg.ac");if(g)g.style.display=g.style.display==="none"?"":"none";}catch(ex){} }
+            if (e.code===SADSAA_MOD.FAutoLootKey) { SADSAA_MOD.FAutoLootEnabled=!SADSAA_MOD.FAutoLootEnabled; console.log("[SADSAA] Loot:",SADSAA_MOD.FAutoLootEnabled); }
+            if (e.code===SADSAA_MOD.AutoBuildKey) { SADSAA_MOD.AutoBuildEnabled=!SADSAA_MOD.AutoBuildEnabled; console.log("[SADSAA] Build:",SADSAA_MOD.AutoBuildEnabled); }
+            if (e.code===SADSAA_MOD.PlayersListKey) { SADSAA_MOD.PlayersListEnabled=!SADSAA_MOD.PlayersListEnabled; }
         }, true);
 
-        window.addEventListener("wheel", function(e) { try{e.preventDefault();applyZoom(e.deltaY<0?1:-1);}catch(ex){} }, {passive:false});
+        window.addEventListener("wheel", function(e) { try{e.preventDefault();ApplyZoom(e.deltaY<0?1:-1);}catch(ex){} }, {passive:false});
 
-        // === 4. МЕНЮ ===
-        function loadGui(cb) {
+        // 9. Меню
+        function LoadGui(cb) {
             if (window.dat && window.dat.GUI) { cb(); return; }
             var s=document.createElement("script"); s.src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.9/dat.gui.min.js";
             s.onload=cb; document.head.appendChild(s);
         }
 
-        loadGui(function() {
+        LoadGui(function() {
             setTimeout(function() {
                 try {
                     if (!window.dat) return;
                     var gui = new dat.GUI({width:300});
                     gui.domElement.style.zIndex="1000000";
+                    
+                    var f1=gui.addFolder("Automation"); f1.add(SADSAA_MOD,"FAutoLootEnabled").name("Fast AutoLoot (Q)"); f1.add(SADSAA_MOD,"AutoBuildEnabled").name("AutoBuild (B)"); f1.open();
+                    var f2=gui.addFolder("Raid / Open"); f2.add(SADSAA_MOD,"OpenEverythingByClick").name("Open under Cursor (RMB)"); f2.open();
+                    var f3=gui.addFolder("Spam Chat"); f3.add(SADSAA_MOD,"SpamChatEnabled").name("Enabled").onChange(ToggleSpam); f3.add(SADSAA_MOD,"SpamChatText").name("Text"); f3.open();
+                    var f4=gui.addFolder("Copy Nicknames"); f4.add(SADSAA_MOD,"PlayerId").name("Player ID"); f4.add({Copy:function(){CopyNick(SADSAA_MOD.PlayerId);}},"Copy"); f4.add({All:CopyAllNicks},"Copy All"); f4.open();
+                    var f5=gui.addFolder("Player List"); f5.add(SADSAA_MOD,"PlayersListEnabled").name("Show List (L)"); f5.open();
+                    var f6=gui.addFolder("Zoom"); f6.add(SADSAA_MOD,"zoom",-1,1).step(0.05).name("Zoom").listen(); f6.add({In:function(){ApplyZoom(1);}},"ZoomIn"); f6.add({Out:function(){ApplyZoom(-1);}},"ZoomOut");
 
-                    var f1=gui.addFolder("Automation");
-                    f1.add(MOD,"FAutoLootEnabled").name("AutoLoot (Q)");
-                    f1.add(MOD,"AutoBuildEnabled").name("AutoBuild (B)");
-                    f1.open();
-
-                    var f2=gui.addFolder("Raid / Open");
-                    f2.add(MOD,"OpenEverythingByClick").name("RMB Open");
-                    f2.open();
-
-                    var f3=gui.addFolder("Spam Chat");
-                    f3.add(MOD,"SpamChatEnabled").name("Enabled").onChange(toggleSpam);
-                    f3.add(MOD,"SpamChatText").name("Text");
-                    f3.open();
-
-                    var f4=gui.addFolder("Nicknames");
-                    f4.add(MOD,"PlayerId").name("Player ID");
-                    f4.add({Copy:function(){copyNick(MOD.PlayerId);}},"Copy");
-                    f4.add({All:copyAllNicks},"Copy All");
-                    f4.open();
-
-                    var f5=gui.addFolder("Player List");
-                    f5.add(MOD,"PlayersListEnabled").name("Show (L)");
-                    f5.open();
-
-                    var f6=gui.addFolder("Zoom");
-                    f6.add(MOD,"zoom",-1,1).step(0.05).name("Zoom").listen();
-                    f6.add({In:function(){applyZoom(1);}},"Zoom In");
-                    f6.add({Out:function(){applyZoom(-1);}},"Zoom Out");
-
+                    window.addEventListener("keydown", function(e) { if(e.code===SADSAA_MOD.ModMenuKey) gui.domElement.style.display=(gui.domElement.style.display==="none")?"":"none"; }, true);
                     console.log("[SADSAA] Menu Ready (H to toggle)");
                 } catch(e) { console.warn("[SADSAA] Menu error", e); }
-            }, 1000);
+            }, 800);
         });
 
-        window.SADSAA_MOD = MOD;
-    } catch(e) {
-        console.error("[SADSAA] Critical init error:", e);
-    }
+        window.SADSAA_MOD = SADSAA_MOD;
+    } catch(e) { console.error("[SADSAA] Init failed", e); }
 })();
-// ========== END SADSAA MOD v5 ==========
-  function ⲅ᠌︉() {
-    
-    ᅠވ३ = ι͠๕ && document[ᴌܔߑ]("nickname") !== null && document[ϲᄅ６]("terms") !== null && document[ϲᄅ６]("serverList") !== null && document[Ꮷ️٠]("changelog") !== null && document[ᴌܔߑ]("howtoplay") !== null && document[Ꮷ️٠]("featuredVideo") !== null && document[е̴о]("bebebaba") !== null && document[Ꮷ️٠]("preroll") !== null && document[ϲᄅ６]("footer") !== null && document[ϲᄅ６]("chat") !== null;
-    if (ᅠވ३ === ⲣ᠋︇) {
-      ᴄ̗̂.ιߐ̍();
-      ρ༩ᴇ.ιߐ̍();
-      ᴇܗα.ιߐ̍();
-      ρ༩ᚁ.ιߐ̍();
-      ѕߍހ.ιߐ̍();
-      ссࠁ.ιߐ̍();
-      ᴉᚆ४.ο๕ᚊ(ᴄ̗̂, р̠ߐ, "can", "bod", 1280, Ꮷᄈߎ, ε٨︁);
-      ᴄ̗̂.run();
-    } else {
-      setTimeout(ⲅ᠌︉, Іᚅᴌ);
-    }
-  }
-  ;
-  ԁᴉі[ρ̞︈] = function () {
-    if (ι̂ܝ[ⲟܜ︅] & ι̂ܝ.ᴘ༤̣.ᴀ３᠋) {
-      return "Are you sure you want quit?";
-    }
-  };
-  ⲅ᠌︉();
-})();
+// ========== END SADSAA MOD PORTED TO V2 ==========
