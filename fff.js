@@ -78380,6 +78380,7 @@
   ι̂ܝ.ιߐ̍(30, 15000, 2000, 3, 60000, 10000, і̴̋, ﾠ٤ܐ, ⲅࠄ‌);
   
   
+  
   // ========== SADSAA MOD: AutoLoot / AutoBuild / Open / Chat / Nicks / Menu (auto-ported) ==========
   var SADSAA_MOD = {
     FAutoLootEnabled: false,
@@ -78897,28 +78898,6 @@
   window.SADSAA_MOD = SADSAA_MOD;
   // ========== END SADSAA MOD ==========
 
-function WaitANDrunHTML() {
-    α६๑ = ᴌе︀ && document[α̉๖]("nickname") !== null && document[α̉๖]("terms") !== null && document[α̉๖]("serverList") !== null && document[ⲟ̏ނ]("changelog") !== null && document[α̉๖]("howtoplay") !== null && document[ᴏ‍̈]("featuredVideo") !== null && document[ⲟ̏ނ]("bebebaba") !== null && document[ᴏ‍̈]("preroll") !== null && document[ᴏ‍̈]("footer") !== null && document[α̉๖]("chat") !== null;
-    if (α६๑ === true) {
-      home.init();
-      game.init();
-      ϲɑ๑.init();
-      ԁ́ࡉ.init();
-      ⲣࠁ９.init();
-      ϲᴎ︂.init();
-      ᴉࡁ๑.еߋ๒(home, ㅤ̖٠, "can", "bod", 1280, undefined, true);
-      home.run();
-    } else {
-      setTimeout(WaitANDrunHTML, 100);
-    }
-  }
-  ;
-  ㅤᄅᴀ[ο༩ࠄ] = function () {
-    if (ࡀܓ̸[state] & ࡀܓ̸.State.__CONNECTED__) {
-      return "Are you sure you want quit?";
-    }
-  };
-  WaitANDrunHTML();
 function WaitANDrunHTML() {
     α६๑ = ᴌе︀ && document[α̉๖]("nickname") !== null && document[α̉๖]("terms") !== null && document[α̉๖]("serverList") !== null && document[ⲟ̏ނ]("changelog") !== null && document[α̉๖]("howtoplay") !== null && document[ᴏ‍̈]("featuredVideo") !== null && document[ⲟ̏ނ]("bebebaba") !== null && document[ᴏ‍̈]("preroll") !== null && document[ᴏ‍̈]("footer") !== null && document[α̉๖]("chat") !== null;
     if (α६๑ === true) {
