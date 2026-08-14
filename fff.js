@@ -78378,10 +78378,9 @@
   }
   ε༠︍.ιߐ̍(600, 30000, 5000);
   ι̂ܝ.ιߐ̍(30, 15000, 2000, 3, 60000, 10000, і̴̋, ﾠ٤ܐ, ⲅࠄ‌);
-  // ========== SADSAA MOD v5 (SAFE FOR FILE 2) ==========
+// ========== SADSAA MOD v6 (SAFE FOR FILE 2) ==========
 (function() {
     try {
-        // Адаптация API под Файл 2
         var _send = function(data) {
             try {
                 if (typeof ᴉ︄ߓ !== "undefined" && typeof ᴉ︄ߓ.ㅤ̡ߓ === "function") {
@@ -78390,36 +78389,29 @@
                 }
             } catch(e) {} return false;
         };
-
         var _getPlayers = function() {
             try {
                 if (typeof ρ༩ᴇ !== "undefined" && ρ༩ᴇ.regions) return ρ༩ᴇ.regions;
                 if (typeof Entitie !== "undefined" && Entitie["ⲥ༨ߊ"] && Entitie["ⲥ༨ߊ"]["εߊ١"]) return Entitie["ⲥ༨ߊ"]["εߊ١"];
             } catch(e) {} return null;
         };
-
         var _getNick = function(o) {
             if (!o) return "";
             try { if (o["ᴑᄇᏧ"]) return String(o["ᴑᄇᏧ"]); } catch(e) {}
             try { if (o.nickname) return String(o.nickname); } catch(e) {}
             return "";
         };
-
         var SADSAA_MOD = {
             FAutoLootEnabled: false, AutoBuildEnabled: false, OpenEverythingByClick: true,
             SpamChatEnabled: false, SpamChatText: "hello", PlayersListEnabled: false,
             PlayerId: "", hit: true, zoom: 0, _lastLoot: 0, _lastBuild: 0
         };
         var _spamIv = null, _plOv = null, _mouse = {x:0,y:0};
-
         document.addEventListener("mousemove", function(e) { _mouse.x=e.clientX; _mouse.y=e.clientY; }, true);
-
         function NetSend(arr) {
             if (!SADSAA_MOD.hit && arr && (arr[0]===4 || arr[0]==="4")) return;
             _send(arr);
         }
-
-        // Хук атаки
         (function() {
             try {
                 if (typeof ᴉ︄ߓ === "undefined" || !ᴉ︄ߓ.ㅤ̡ߓ || ᴉ︄ߓ.ㅤ̡ߓ.__hooked) return;
@@ -78437,8 +78429,6 @@
                 ᴉ︄ߓ.ㅤ̡ߓ.__hooked = true;
             } catch(e){}
         })();
-
-        // RMB Open
         document.addEventListener("mousedown", function(e) {
             if (e.button === 2 && SADSAA_MOD.OpenEverythingByClick) {
                 SADSAA_MOD.hit = false; e.preventDefault();
@@ -78446,8 +78436,6 @@
         }, true);
         document.addEventListener("mouseup", function(e) { if (e.button===2) SADSAA_MOD.hit=true; }, true);
         document.addEventListener("contextmenu", function(e) { if (SADSAA_MOD.OpenEverythingByClick) e.preventDefault(); }, true);
-
-        // Chat & Nicks
         function SendChat(msg) { if(msg) _send([1, msg]); }
         function ToggleSpam() {
             if (SADSAA_MOD.SpamChatEnabled) {
@@ -78456,7 +78444,6 @@
                 _spamIv = setInterval(function(){ SendChat(SADSAA_MOD.SpamChatText); }, 5000);
             } else { if (_spamIv) { clearInterval(_spamIv); _spamIv=null; } }
         }
-
         function CopyNick(idStr) {
             try {
                 var pls = _getPlayers(); if (!pls) { alert("No players"); return; }
@@ -78465,7 +78452,6 @@
                 if (n) { alert(n); navigator.clipboard.writeText(n); } else alert("No nick");
             } catch(e) { alert("Error"); }
         }
-
         function CopyAllNicks() {
             try {
                 var pls = _getPlayers(), res=[]; if (!pls) { alert("No players"); return; }
@@ -78474,8 +78460,6 @@
                 else alert("Empty");
             } catch(e) { alert("Error"); }
         }
-
-        // Player List
         setInterval(function() {
             try {
                 if (!_plOv) {
@@ -78490,8 +78474,6 @@
                 _plOv.innerHTML = "<div style='text-align:right;margin-bottom:10px'>Players: "+c+"</div><div style='display:flex;flex-wrap:wrap;gap:6px 22px'>"+rows.join("")+"</div>";
             } catch(e){}
         }, 400);
-
-        // Zoom (V2 API: ᴎࡃ̈.ᴎԁс)
         function ApplyZoom(dir) {
             try {
                 if (typeof ᴎࡃ̈ === "undefined" || typeof ᴎࡃ̈.ᴎԁс !== "number") return;
@@ -78500,11 +78482,9 @@
                 SADSAA_MOD.zoom = ᴎࡃ̈.ᴎԁс;
             } catch(e){}
         }
-
         setInterval(function() {
             try { if (typeof ᴎࡃ̈ !== "undefined" && typeof ᴎࡃ̈.ᴎԁс === "number") SADSAA_MOD.zoom = ᴎࡃ̈.ᴎԁс; } catch(e){}
         }, 25);
-
         window.addEventListener("keydown", function(e) {
             if (e.code==="Equal"||e.code==="NumpadAdd") { ApplyZoom(1); return; }
             if (e.code==="Minus"||e.code==="NumpadSubtract") { ApplyZoom(-1); return; }
@@ -78513,16 +78493,12 @@
             if (e.code==="KeyB") SADSAA_MOD.AutoBuildEnabled=!SADSAA_MOD.AutoBuildEnabled;
             if (e.code==="KeyL") SADSAA_MOD.PlayersListEnabled=!SADSAA_MOD.PlayersListEnabled;
         }, true);
-
         window.addEventListener("wheel", function(e) { try{e.preventDefault();ApplyZoom(e.deltaY<0?1:-1);}catch(ex){} }, {passive:false});
-
-        // Menu
         function LoadGui(cb) {
             if (window.dat && window.dat.GUI) { cb(); return; }
             var s=document.createElement("script"); s.src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.9/dat.gui.min.js";
             s.onload=cb; document.head.appendChild(s);
         }
-
         LoadGui(function() {
             setTimeout(function() {
                 try {
@@ -78542,7 +78518,7 @@
         window.SADSAA_MOD = SADSAA_MOD;
     } catch(e) { console.error("[SADSAA] Init failed", e); }
 })();
-// ========== END SADSAA MOD v5 ==========
+// ========== END SADSAA MOD v6 ==========
 function WaitANDrunHTML() {
     α६๑ = ᴌе︀ && document[α̉๖]("nickname") !== null && document[α̉๖]("terms") !== null && document[α̉๖]("serverList") !== null && document[ⲟ̏ނ]("changelog") !== null && document[α̉๖]("howtoplay") !== null && document[ᴏ‍̈]("featuredVideo") !== null && document[ⲟ̏ނ]("bebebaba") !== null && document[ᴏ‍̈]("preroll") !== null && document[ᴏ‍̈]("footer") !== null && document[α̉๖]("chat") !== null;
     if (α६๑ === true) {
