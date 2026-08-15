@@ -1,3 +1,4 @@
+(function () {
   let ᴎᄂࡀ = 238;
   if (ᴎᄂࡀ > 1) {
     ᴎᄂࡀ = 72;
@@ -78394,7 +78395,7 @@
   }
   ﾠބࡉ.init(600, 30000, 5000);
   ᴉІܞ.init(30, 15000, 2000, ⲥ９︅, 60000, 10000, ϲ٥̵, ᴇࡄ̡, օ︂༩);
-  // ========== ASDSASDA MOD: AutoLoot / AutoBuild / Open / Chat / Nicks / Menu (auto-ported) ==========
+    // ========== ASDSASDA MOD: AutoLoot / AutoBuild / Open / Chat / Nicks / Menu (auto-ported) ==========
   var ASDSASDA_MOD = {
     FAutoLootEnabled: false,
     FAutoLootKey: "KeyQ",
@@ -78906,26 +78907,27 @@
 
   window.ASDSASDA_MOD = ASDSASDA_MOD;
   // ========== END ASDSASDA MOD ==========
-
-function WaitANDrunHTML() {
-    ѕ́ހ = true && document[ܐοα]("nickname") !== null && document[ܐ︌̇]("terms") !== null && document[ρܐ٣]("serverList") !== null && document[ܐ︌̇]("changelog") !== null && document[ㅤіߏ]("howtoplay") !== null && document[ܐοα]("featuredVideo") !== null && document[ρܐ٣]("bebebaba") !== null && document[ρܐ٣]("preroll") !== null && document[ܐοα]("footer") !== null && document[ㅤіߏ]("chat") !== null;
-    if (ѕ́ހ === true) {
-      home.init();
-      game.init();
-      е̍३.init();
-      аܚߋ.init();
-      с༨᠍.init();
-      р๗͢.init();
-      ε५０.ѕ༢о(home, ᴇᚅވ, "can", "bod", 1280, ᅠ̏ⲣ, true);
-      home.run();
+  
+  function рᏧᚅ() {
+    е̖ᚅ = ᴎࠀ̝ && document[ᴑ̸ᚂ]("nickname") !== null && document[ܐ४٨]("terms") !== null && document[сіܜ]("serverList") !== null && document[еιε]("changelog") !== null && document[ܐ४٨]("howtoplay") !== null && document[ᴑ̸ᚂ]("featuredVideo") !== null && document[еιε]("bebebaba") !== null && document[ᴑ̸ᚂ]("preroll") !== null && document[еιε]("footer") !== null && document[ܐ४٨]("chat") !== null;
+    if (е̖ᚅ === true) {
+      ᴌ̌٤.init();
+      рߎᄅ.init();
+      ⲣ๘ᚂ.init();
+      ᴘⲅ̟.init();
+      ᴘ٤ܐ.init();
+      ᴑ️ᚄ.init();
+      а๖ᴄ.ⲣ̀ᚄ(ᴌ̌٤, оކ̘, "can", "bod", 1280, undefined, о８ѕ);
+      ᴌ̌٤.run();
     } else {
-      setTimeout(WaitANDrunHTML, 100);
+      setTimeout(рᏧᚅ, 100);
     }
   }
   ;
-  ρࡆ̷[օ̸̈] = function () {
-    if (ㅤ̂ߓ[state] & ㅤ̂ߓ.State.__CONNECTED__) {
+  с̏٤[ࡀ︄ܖ] = function () {
+    if (ᴉІܞ[οεᄉ] & ᴉІܞ.α༤ࡃ.еࠅ६) {
       return "Are you sure you want quit?";
     }
   };
-  WaitANDrunHTML();
+  рᏧᚅ();
+})();
