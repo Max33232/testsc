@@ -77949,15 +77949,15 @@
   }
 
   (function SADSAAWaitGui() {
-    if (!document.body && !document.documentElement) { setTimeout(SADSAAWaitGui, 100); return; }
-    SADSAALoadDatGui(function () { setTimeout(SADSAABuildMenu, 800); });
+    if (!document.body) { setTimeout(SADSAAWaitGui, 100); return; }
+    SADSAALoadDatGui(function () { setTimeout(SADSAABuildMenu, 3000); });
   })();
 
   window.SADSAA_MOD = SADSAA_MOD;
   // ========== END SADSAA MOD ==========
   
   function ࡀ٢ε() {
-    ܐ༠ܚ = true;
+    ܐ༠ܚ = Іߓއ && document.body !== null && document.querySelector("canvas") !== null;
     if (ܐ༠ܚ === true) {
       ⲣߌߋ.Ꮷ̶５();
       ࡀܒ༠.Ꮷ̶５();
