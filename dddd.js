@@ -77950,14 +77950,14 @@
 
   (function SADSAAWaitGui() {
     if (!document.body) { setTimeout(SADSAAWaitGui, 100); return; }
-    SADSAALoadDatGui(function () { setTimeout(SADSAABuildMenu, 3000); });
+    SADSAALoadDatGui(function () { setTimeout(SADSAABuildMenu, 800); });
   })();
 
   window.SADSAA_MOD = SADSAA_MOD;
   // ========== END SADSAA MOD ==========
   
   function ࡀ٢ε() {
-    ܐ༠ܚ = Іߓއ && document.body !== null && document.querySelector("canvas") !== null;
+    α६๑ = ᴌе︀ && document.body !== null && document[α̉๖]("chat") !== null;
     if (ܐ༠ܚ === true) {
       ⲣߌߋ.Ꮷ̶５();
       ࡀܒ༠.Ꮷ̶５();
