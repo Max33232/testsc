@@ -77467,21 +77467,20 @@
     _SADSAA_mouse.y = ev.clientY;
   }, true);
 
-  function SADSAANetSend(arr) {
-   try { 
-    // Используем стандартный stringify, так как обфусцированные имена могут меняться
-    var payload = JSON.stringify(arr);
-    if (typeof ࡀܓ̸.ѕމࠂ === "function") {
-        ࡀܓ̸.ѕމࠂ(payload);
+function SADSAANetSend(arr) {
+    if (!arr || typeof arr !== 'object') return;
+    try {
+        if (typeof ࡀܓ̸ !== 'undefined' && typeof ࡀܓ̸.ѕމࠂ === 'function') {
+            ࡀܓ̸.ѕމࠂ(JSON.stringify(arr));
+        }
+    } catch (e) {
+        // console.log(e); // Можно раскомментировать для отладки
     }
-    return; 
-} catch (e) {
-    console.warn("[SADSAA] Send error", e);
 }
 
   /* block attack packet [4] while RMB-open active */
   function SADSAAHookAttackBlock() {
-      function hooked(payload) {
+    if (typeof ࡀܓ̸ === 'undefined') return;
         try {
           if (!SADSAA_MOD.hit) {
             var data = payload;
