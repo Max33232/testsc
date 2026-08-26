@@ -77467,14 +77467,22 @@
     _SADSAA_mouse.y = ev.clientY;
   }, true);
 
-  function SADSAANetSend(arr) {
+function SADSAANetSend(arr) {
     try {
-        // Пытаемся найти объект сети, даже если он сменил имя
-        var net = window.ࡀܓ̸ || window.net || window.socket; 
-        if (net && typeof net.ѕމࠂ === "function") {
-            net.ѕމࠂ(JSON.stringify(arr));
+        // Ищем сетевой объект в глобальной области видимости каждый раз
+        var netObj = window.ࡀܓ̸ || window.netClient || window.socket;
+        
+        // Если нашли объект и у него есть функция отправки
+        if (netObj && typeof netObj.ѕމࠂ === "function") {
+            netObj.ѕމࠂ(JSON.stringify(arr));
+        } 
+        // Запасной вариант для других версий игры
+        else if (typeof ࡀܓ̸ !== "undefined" && typeof ࡀܓ̸.ѕމࠂ === "function") {
+             ࡀܓ̸.ѕމࠂ(JSON.stringify(arr));
         }
-    } catch (e) {}
+    } catch (e) {
+        // console.log("Send error", e);
+    }
 }
 
   /* block attack packet [4] while RMB-open active */
@@ -77746,7 +77754,9 @@
   function SADSAAFAutoLootTick() {
     if (!SADSAA_MOD.FAutoLootEnabled) return;
     try {
-      if (typeof World === "undefined" || !World.PLAYER) return;
+        // Принудительно обновляем ссылку на World перед каждым тиком
+        var W = window.World; 
+        if (!W || !W.PLAYER) return;
       var now = Date.now();
       if (now - SADSAA_MOD._lastLoot < 20) return;
       SADSAA_MOD._lastLoot = now;
@@ -77792,12 +77802,12 @@
     } catch (err) {}
   }
 
-  function SADSAAAutoBuildTick() {
+ function SADSAAAutoBuildTick() {
     if (!SADSAA_MOD.AutoBuildEnabled) return;
     try {
-      if (typeof World === "undefined" || !World.PLAYER) return;
-      var now = Date.now();
-      if (now - SADSAA_MOD._lastBuild < 30) return;
+        // Принудительно обновляем ссылку на World
+        var W = window.World;
+        if (!W || !W.PLAYER) return;
       var rot = World.PLAYER.о︅ᚂ;
       var bi  = World.PLAYER.ᴀއ︆;
       var bj  = World.PLAYER.аᴘ︋;
