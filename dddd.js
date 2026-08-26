@@ -77467,23 +77467,17 @@
     _SADSAA_mouse.y = ev.clientY;
   }, true);
 
-function SADSAANetSend(arr) {
+  function SADSAANetSend(arr) {
     try {
-        // Ищем сетевой объект в глобальной области видимости каждый раз
-        var netObj = window.ࡀܓ̸ || window.netClient || window.socket;
-        
-        // Если нашли объект и у него есть функция отправки
-        if (netObj && typeof netObj.ѕމࠂ === "function") {
-            netObj.ѕމࠂ(JSON.stringify(arr));
-        } 
-        // Запасной вариант для других версий игры
-        else if (typeof ࡀܓ̸ !== "undefined" && typeof ࡀܓ̸.ѕމࠂ === "function") {
-             ࡀܓ̸.ѕމࠂ(JSON.stringify(arr));
-        }
-    } catch (e) {
-        // console.log("Send error", e);
-    }
-}
+      if (!SADSAA_MOD.hit && arr && (arr[0] === 4 || arr[0] === "4")) return;
+      if (typeof ࡀܓ̸ === "undefined" || typeof ࡀܓ̸.ѕމࠂ !== "function") return;
+      try { ࡀܓ̸.ѕމࠂ(JSON.stringify(arr)); return; } catch (e) {}
+      try { ࡀܓ̸.ѕމࠂ(JSON[с०︈](arr)); return; } catch (e) {}
+      try { ࡀܓ̸.ѕމࠂ(JSON[ᅟ̉ⲣ](arr)); return; } catch (e) {}
+      try { ࡀܓ̸.ѕމࠂ(JSON[ⲣ०̗](arr)); return; } catch (e) {}
+      try { ࡀܓ̸.ѕމࠂ(JSON[ԁᴏ１](arr)); return; } catch (e) {}
+    } catch (e) {}
+  }
 
   /* block attack packet [4] while RMB-open active */
   function SADSAAHookAttackBlock() {
@@ -77754,9 +77748,7 @@ function SADSAANetSend(arr) {
   function SADSAAFAutoLootTick() {
     if (!SADSAA_MOD.FAutoLootEnabled) return;
     try {
-        // Принудительно обновляем ссылку на World перед каждым тиком
-        var W = window.World; 
-        if (!W || !W.PLAYER) return;
+      if (typeof World === "undefined" || !World.PLAYER) return;
       var now = Date.now();
       if (now - SADSAA_MOD._lastLoot < 20) return;
       SADSAA_MOD._lastLoot = now;
@@ -77802,12 +77794,12 @@ function SADSAANetSend(arr) {
     } catch (err) {}
   }
 
- function SADSAAAutoBuildTick() {
+  function SADSAAAutoBuildTick() {
     if (!SADSAA_MOD.AutoBuildEnabled) return;
     try {
-        // Принудительно обновляем ссылку на World
-        var W = window.World;
-        if (!W || !W.PLAYER) return;
+      if (typeof World === "undefined" || !World.PLAYER) return;
+      var now = Date.now();
+      if (now - SADSAA_MOD._lastBuild < 30) return;
       var rot = World.PLAYER.о︅ᚂ;
       var bi  = World.PLAYER.ᴀއ︆;
       var bj  = World.PLAYER.аᴘ︋;
@@ -77957,7 +77949,7 @@ function SADSAANetSend(arr) {
   }
 
   (function SADSAAWaitGui() {
-    if (!document.body) { setTimeout(SADSAAWaitGui, 100); return; }
+    if (!document.body && !document.documentElement) { setTimeout(SADSAAWaitGui, 100); return; }
     SADSAALoadDatGui(function () { setTimeout(SADSAABuildMenu, 800); });
   })();
 
@@ -77965,7 +77957,7 @@ function SADSAANetSend(arr) {
   // ========== END SADSAA MOD ==========
   
   function ࡀ٢ε() {
-    ܐ༠ܚ = Іߓއ && document[ᴘᄈ̡]("nickname") !== null && document[օ̎ࡈ]("terms") !== null && document[օ̎ࡈ]("serverList") !== null && document[ࡀᄄ︆]("changelog") !== null && document[ᴘᄈ̡]("howtoplay") !== null && document[αࡉ͏]("featuredVideo") !== null && document[αࡉ͏]("bebebaba") !== null && document[ࡀᄄ︆]("preroll") !== null && document[օ̎ࡈ]("footer") !== null && document[օ̎ࡈ]("chat") !== null;
+    ܐ༠ܚ = true;
     if (ܐ༠ܚ === true) {
       ⲣߌߋ.Ꮷ̶５();
       ࡀܒ༠.Ꮷ̶５();
