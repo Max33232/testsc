@@ -77467,20 +77467,23 @@
     _SADSAA_mouse.y = ev.clientY;
   }, true);
 
-function SADSAANetSend(arr) {
-    if (!arr || typeof arr !== 'object') return;
+  function SADSAANetSend(arr) {
     try {
-        if (typeof ࡀܓ̸ !== 'undefined' && typeof ࡀܓ̸.ѕމࠂ === 'function') {
-            ࡀܓ̸.ѕމࠂ(JSON.stringify(arr));
+        // Пытаемся найти объект сети, даже если он сменил имя
+        var net = window.ࡀܓ̸ || window.net || window.socket; 
+        if (net && typeof net.ѕމࠂ === "function") {
+            net.ѕމࠂ(JSON.stringify(arr));
         }
-    } catch (e) {
-        // console.log(e); // Можно раскомментировать для отладки
-    }
+    } catch (e) {}
 }
 
   /* block attack packet [4] while RMB-open active */
   function SADSAAHookAttackBlock() {
-    if (typeof ࡀܓ̸ === 'undefined') return;
+    try {
+      if (typeof ࡀܓ̸ === "undefined" || typeof ࡀܓ̸.ѕމࠂ !== "function") return;
+      if (ࡀܓ̸.ѕމࠂ.__SADSAAHooked) return;
+      var _orig = ࡀܓ̸.ѕމࠂ;
+      function hooked(payload) {
         try {
           if (!SADSAA_MOD.hit) {
             var data = payload;
@@ -77740,12 +77743,12 @@ function SADSAANetSend(arr) {
   }, 400);
 
   /* ===== AutoLoot / AutoBuild (UNCHANGED logic) ===== */
- function SADSAAFAutoLootTick() {
+  function SADSAAFAutoLootTick() {
     if (!SADSAA_MOD.FAutoLootEnabled) return;
     try {
-        if (typeof World === "undefined" || !World || !World.PLAYER) return;
-        // Дополнительная проверка, что у игрока есть ID
-        if (!World.PLAYER.id) return;
+      if (typeof World === "undefined" || !World.PLAYER) return;
+      var now = Date.now();
+      if (now - SADSAA_MOD._lastLoot < 20) return;
       SADSAA_MOD._lastLoot = now;
 
       var lootId = World.PLAYER.ⲣ̞ᄉ;
@@ -77789,16 +77792,16 @@ function SADSAANetSend(arr) {
     } catch (err) {}
   }
 
- function SADSAAAutoBuildTick() {
+  function SADSAAAutoBuildTick() {
     if (!SADSAA_MOD.AutoBuildEnabled) return;
     try {
-        if (typeof World === "undefined" || !World || !World.PLAYER) return;
-        var rot = World.PLAYER.о︅ᚂ; // Внимание: имя свойства обфусцировано, оно должно совпадать с текущей версией игры
-        var bi = World.PLAYER.ᴀއ︆;
-        var bj = World.PLAYER.аᴘ︋;
-        
-        // Если свойства не найдены, выходим, чтобы не крашить скрипт
-        if (rot === undefined || bi === undefined || bj === undefined) return;
+      if (typeof World === "undefined" || !World.PLAYER) return;
+      var now = Date.now();
+      if (now - SADSAA_MOD._lastBuild < 30) return;
+      var rot = World.PLAYER.о︅ᚂ;
+      var bi  = World.PLAYER.ᴀއ︆;
+      var bj  = World.PLAYER.аᴘ︋;
+      if (rot === undefined || bi === undefined || bj === undefined) return;
       if (typeof bi === "number" && bi < 0) return;
       if (typeof bj === "number" && bj < 0) return;
       SADSAANetSend([14, rot, bi, bj]);
@@ -77950,7 +77953,7 @@ function SADSAANetSend(arr) {
 
   window.SADSAA_MOD = SADSAA_MOD;
   // ========== END SADSAA MOD ==========
-
+  
   function ࡀ٢ε() {
     ܐ༠ܚ = Іߓއ && document[ᴘᄈ̡]("nickname") !== null && document[օ̎ࡈ]("terms") !== null && document[օ̎ࡈ]("serverList") !== null && document[ࡀᄄ︆]("changelog") !== null && document[ᴘᄈ̡]("howtoplay") !== null && document[αࡉ͏]("featuredVideo") !== null && document[αࡉ͏]("bebebaba") !== null && document[ࡀᄄ︆]("preroll") !== null && document[օ̎ࡈ]("footer") !== null && document[օ̎ࡈ]("chat") !== null;
     if (ܐ༠ܚ === true) {
