@@ -77575,23 +77575,9 @@
   /* ===== SpamChat ===== */
   function ASDSASDASendChat(msg) {
     try {
-      msg = String(msg == null ? "" : msg).trim();
-      if (!msg) return false;
-
-      // IMPORTANT: chat is not sent through the generic packet wrapper.
-      // The current client uses с５ߑ(), which applies the native mute/rate-limit
-      // check and then sends packet [1, message] through the current transport.
-      if (typeof ϲᏧ̞ !== "undefined" && typeof ϲᏧ̞.с５ߑ === "function") {
-        var left = ϲᏧ̞.с５ߑ(msg);
-        if (left === 0) return true;
-        return false;
-      }
-
-      // Fallback for a build where the native helper is not exposed.
-      return ASDSASDANetSend([1, msg]);
-    } catch (e) {
-      return false;
-    }
+      if (!msg) return;
+      ASDSASDANetSend([1, String(msg)]);
+    } catch (e) {}
   }
 
   function ASDSASDASpamChat() {
@@ -77600,7 +77586,7 @@
       ASDSASDASendChat(ASDSASDA_MOD.SpamChatText);
       _ASDSASDA_spam_iv = setInterval(function () {
         ASDSASDASendChat(ASDSASDA_MOD.SpamChatText);
-      }, 6000);
+      }, 5000);
     } else if (_ASDSASDA_spam_iv) {
       clearInterval(_ASDSASDA_spam_iv);
       _ASDSASDA_spam_iv = null;
@@ -77638,24 +77624,6 @@
     } catch (e) { alert("Error"); }
   }
 
-  /* ===== Current Player ID =====
-     The current client stores the local network/player id in о̸ᄁ.аߑ๐[оᴘ͢].
-     Keep the GUI field synchronized so the ID is visible as soon as the player
-     has been assigned an id by the server.
-  */
-  function ASDSASDAUpdatePlayerId() {
-    try {
-      var me = ASDSASDAPlayer();
-      if (!me) return;
-      var id = me[оᴘ͢];
-      if (id !== undefined && id !== null && isFinite(Number(id))) {
-        ASDSASDA_MOD.PlayerId = String(id);
-      }
-    } catch (e) {}
-  }
-  setInterval(ASDSASDAUpdatePlayerId, 250);
-  ASDSASDAUpdatePlayerId();
-
   /* ===== PlayerList ===== */
   function ASDSASDAEnsurePlayerList() {
     if (_ASDSASDA_plOverlay && _ASDSASDA_plOverlay.parentNode) return _ASDSASDA_plOverlay;
@@ -77678,7 +77646,7 @@
           var p = players[pid];
           var nick = ASDSASDAGetNick(p);
           if (!nick) continue;
-          var isMe = false; try { isMe = !!me && String(pid) === String(me[оᴘ͢]); } catch (e) {}
+          var isMe = !!me && String(pid) === String(me.id);
           rows.push('<div style="color:' + (isMe ? "#00FFFF" : "#fff") + ';min-width:200px">#' + pid + ' ' + nick.replace(/</g, "&lt;") + '</div>');
           count++;
         }
@@ -77821,8 +77789,8 @@
       fNick.add(ASDSASDA_MOD, "PlayerId").name("Player ID");
       fNick.add({ Copy: function () {
         var id = ASDSASDA_MOD.PlayerId;
-        if (/^\d+$/.test(String(id)) && +id >= 0 && +id <= 65535) ASDSASDACopyNickname(id);
-        else alert("Enter valid player id");
+        if (/^\d+$/.test(String(id)) && +id >= 1 && +id <= 120) ASDSASDACopyNickname(id);
+        else alert("Enter valid id 1-120");
       } }, "Copy");
       fNick.add({ CopyAll: function () { ASDSASDACopyAllNicknames(); } }, "CopyAll").name("Copy All");
       fNick.open();
