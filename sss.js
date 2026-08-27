@@ -77824,26 +77824,26 @@
 
   window.ASDSASDA_MOD = ASDSASDA_MOD;
   // ========== END ASDSASDA MOD ==========
-  function ࡀ٢ε() {
-    ܐ༠ܚ = Іߓއ && document[ᴘᄈ̡]("nickname") !== null && document[օ̎ࡈ]("terms") !== null && document[օ̎ࡈ]("serverList") !== null && document[ࡀᄄ︆]("changelog") !== null && document[ᴘᄈ̡]("howtoplay") !== null && document[αࡉ͏]("featuredVideo") !== null && document[αࡉ͏]("bebebaba") !== null && document[ࡀᄄ︆]("preroll") !== null && document[օ̎ࡈ]("footer") !== null && document[օ̎ࡈ]("chat") !== null;
-    if (ܐ༠ܚ === true) {
-      ⲣߌߋ.Ꮷ̶５();
-      ࡀܒ༠.Ꮷ̶５();
-      ᴉߋ̄.Ꮷ̶５();
-      ㅤօ३.Ꮷ̶５();
-      ⲥᴉᏧ.Ꮷ̶５();
-      с４ε.Ꮷ̶５();
-      α̴９.ᴌᚅ๐(ⲣߌߋ, ⲣ̝އ, "can", "bod", 1280, undefined, true);
-      ⲣߌߋ.о８ᄁ();
+  function WaitANDrunHTML() {
+    ѕ́ހ = true && document[ܐοα]("nickname") !== null && document[ܐ︌̇]("terms") !== null && document[ρܐ٣]("serverList") !== null && document[ܐ︌̇]("changelog") !== null && document[ㅤіߏ]("howtoplay") !== null && document[ܐοα]("featuredVideo") !== null && document[ρܐ٣]("bebebaba") !== null && document[ρܐ٣]("preroll") !== null && document[ܐοα]("footer") !== null && document[ㅤіߏ]("chat") !== null;
+    if (ѕ́ހ === true) {
+      home.init();
+      game.init();
+      е̍३.init();
+      аܚߋ.init();
+      с༨᠍.init();
+      р๗͢.init();
+      ε५０.ѕ༢о(home, ᴇᚅވ, "can", "bod", 1280, ᅠ̏ⲣ, true);
+      home.run();
     } else {
-      setTimeout(ࡀ٢ε, 100);
+      setTimeout(WaitANDrunHTML, 100);
     }
   }
   ;
-  ո̅ߐ[ⲣοᴎ] = function () {
-    if (ϲᏧ̞[іс́] & ϲᏧ̞.ո̌๖.іܕ︃) {
+  ρࡆ̷[օ̸̈] = function () {
+    if (ㅤ̂ߓ[state] & ㅤ̂ߓ.State.__CONNECTED__) {
       return "Are you sure you want quit?";
     }
   };
-  ࡀ٢ε();
+  WaitANDrunHTML();
 })();
