@@ -36375,6 +36375,7 @@
       debugger;
       debugger;
     }
+    a;
   }
   ;
   ;
@@ -77439,8 +77440,8 @@
   }
   օ０ߒ.Ꮷ̶５(600, 30000, 5000);
   ϲᏧ̞.Ꮷ̶５(30, 15000, 2000, 3, 60000, 10000, ϲ̠͢, ⲣᄀ︅, εރᚃ);
-    // ========== SADSAA MOD: AutoLoot / AutoBuild / Open / Chat / Nicks / Menu (auto-ported) ==========
-  var SADSAA_MOD = {
+    // ========== ASDSASDA MOD: current-client port ==========
+  var ASDSASDA_MOD = {
     FAutoLootEnabled: false,
     FAutoLootKey: "KeyQ",
     AutoBuildEnabled: false,
@@ -77458,252 +77459,161 @@
     ModMenuKey: "KeyH"
   };
 
-  var _SADSAA_spam_iv = null;
-  var _SADSAA_plOverlay = null;
-  var _SADSAA_mouse = { x: 0, y: 0 };
+  var _ASDSASDA_spam_iv = null;
+  var _ASDSASDA_plOverlay = null;
+  var _ASDSASDA_mouse = { x: 0, y: 0 };
 
-  document.addEventListener("mousemove", function (ev) {
-    _SADSAA_mouse.x = ev.clientX;
-    _SADSAA_mouse.y = ev.clientY;
-  }, true);
-
-  function SADSAANetSend(arr) {
+  function ASDSASDAPlayer() {
     try {
-      if (!SADSAA_MOD.hit && arr && (arr[0] === 4 || arr[0] === "4")) return;
-      if (typeof ࡀܓ̸ === "undefined" || typeof ࡀܓ̸.ѕމࠂ !== "function") return;
-      try { ࡀܓ̸.ѕމࠂ(JSON.stringify(arr)); return; } catch (e) {}
-      try { ࡀܓ̸.ѕމࠂ(JSON[с०︈](arr)); return; } catch (e) {}
-      try { ࡀܓ̸.ѕމࠂ(JSON[ᅟ̉ⲣ](arr)); return; } catch (e) {}
-      try { ࡀܓ̸.ѕމࠂ(JSON[ⲣ०̗](arr)); return; } catch (e) {}
-      try { ࡀܓ̸.ѕމࠂ(JSON[ԁᴏ１](arr)); return; } catch (e) {}
-    } catch (e) {}
+      return (typeof о̸ᄁ !== "undefined" && о̸ᄁ.аߑ๐) ? о̸ᄁ.аߑ๐ : null;
+    } catch (e) { return null; }
   }
 
-  /* block attack packet [4] while RMB-open active */
-  function SADSAAHookAttackBlock() {
+  function ASDSASDAPlayers() {
     try {
-      if (typeof ࡀܓ̸ === "undefined" || typeof ࡀܓ̸.ѕމࠂ !== "function") return;
-      if (ࡀܓ̸.ѕމࠂ.__SADSAAHooked) return;
-      var _orig = ࡀܓ̸.ѕމࠂ;
-      function hooked(payload) {
-        try {
-          if (!SADSAA_MOD.hit) {
-            var data = payload;
-            if (typeof payload === "string") {
-              try { data = JSON.parse(payload); } catch (e) { data = payload; }
-            }
-            if (data && (data[0] === 4 || data[0] === "4")) return;
-          }
-        } catch (e) {}
-        return _orig.apply(this, arguments);
-      }
-      hooked.__SADSAAHooked = true;
-      ࡀܓ̸.ѕމࠂ = hooked;
-    } catch (e) {}
+      return (typeof о̸ᄁ !== "undefined" && о̸ᄁ.ІܒІ) ? о̸ᄁ.ІܒІ : null;
+    } catch (e) { return null; }
   }
-  setInterval(SADSAAHookAttackBlock, 500);
-  SADSAAHookAttackBlock();
 
-  function SADSAAGetPos(obj) {
+  function ASDSASDAGetPos(obj) {
     if (!obj) return null;
     var px, py;
-    try { px = obj[x]; } catch (e) {}
-    try { if (px === undefined) px = obj.x; } catch (e) {}
-    try { py = obj[y]; } catch (e) {}
-    try { if (py === undefined) py = obj.y; } catch (e) {}
-    if (px === undefined || py === undefined || !isFinite(px) || !isFinite(py)) return null;
-    return { x: +px, y: +py };
+    try { px = obj.x; } catch (e) {}
+    try { py = obj.y; } catch (e) {}
+    if (typeof px !== "number" || typeof py !== "number" || !isFinite(px) || !isFinite(py)) return null;
+    return { x: px, y: py };
   }
 
-  function SADSAAGetNick(obj) {
+  function ASDSASDAGetNick(obj) {
     if (!obj) return "";
     var n = "";
-    try { n = obj.ᴑᄇᏧ; } catch (e) {}
+    try { n = obj.ѕߍ̷; } catch (e) {}
     try { if (!n) n = obj.nickname; } catch (e) {}
     return n ? String(n) : "";
   }
 
-  function SADSAAIsConnected() {
+  function ASDSASDANetSend(arr) {
     try {
-      if (typeof ࡀܓ̸ === "undefined") return false;
-      if (ࡀܓ̸.State && ࡀܓ̸.State.__CONNECTED__) {
-        try { if ((ࡀܓ̸[state] & ࡀܓ̸.State.__CONNECTED__) !== 0) return true; } catch (e) {}
-        try { if (ࡀܓ̸.state === 1) return true; } catch (e) {}
-      }
+      if (!Array.isArray(arr)) return false;
+      // Current client encoder/transport: ᴇ̆އ.օ️︇ -> εсܖ.
+      εсܖ(ᴇ̆އ.օ️︇(arr));
+      return true;
+    } catch (e) {
+      try {
+        // Native JSON path used by the current client for several packets.
+        if (typeof ϲᏧ̞ !== "undefined" && typeof ϲᏧ̞.αɑІ === "function") {
+          ϲᏧ̞.αɑІ(JSON.stringify(arr));
+          return true;
+        }
+      } catch (e2) {}
       return false;
+    }
+  }
+
+  function ASDSASDAIsConnected() {
+    try {
+      return typeof ᴇ̸ܙ !== "undefined" && typeof ᴇ̸ܙ[еᴉᴘ] === "function";
     } catch (e) { return false; }
   }
 
-  function SADSAAGetCanvas() {
-    return document.getElementById("can") || document.querySelector("#can") || document.querySelector("canvas");
+  function ASDSASDAGetCanvas() {
+    return document.getElementById("can") || document.querySelector("canvas");
   }
 
-  /* ===== Open under cursor (RMB) ===== */
-  function SADSAAFindEntityUnderCursor() {
-    try {
-      if (typeof Entitie === "undefined" || !Entitie["ⲥ༨ߊ"]) return null;
-      if (typeof ⲟ̠٦ === "undefined") return null;
-      if (!World || !World.PLAYER) return null;
-      var me = SADSAAGetPos(World.PLAYER);
-      if (!me) return null;
-      var canvas = SADSAAGetCanvas();
-      if (!canvas) return null;
-      var rect = canvas.getBoundingClientRect();
-      var sx = _SADSAA_mouse.x - rect.left;
-      var sy = _SADSAA_mouse.y - rect.top;
-      var cw = rect.width, ch = rect.height;
-      var mouseAngle = Math.atan2(sy - ch / 2, sx - cw / 2);
-      var zoom = 0;
-      try { if (typeof ⲅᄄ๒ !== "undefined") zoom = ⲅᄄ๒[е︁̝] || 0; } catch (e) {}
-      var base = 1800;
-      var scaleby = Math.max(ch / (base * 11 / 16), cw / base);
-      scaleby = scaleby * (1 + (typeof zoom === "number" ? zoom * 0.5 : 0));
-      if (!isFinite(scaleby) || scaleby < 0.05) scaleby = 1;
-      var worldX = me.x + (sx - cw / 2) / scaleby;
-      var worldY = me.y + (sy - ch / 2) / scaleby;
-      var best = null, bestScore = 1e18;
-    for (var ti = 0; ti <= 30; ti++) {
-      var units = Entitie["ⲥ༨ߊ"][ti];
-      if (!units) continue;
-      var len = 0;
-      try { len = units.length || 0; } catch (e) { continue; }
-      for (var i = 0; i < len; i++) {
-        var ent = null;
-        try { ent = units[i]; } catch (e) {}
-        if (!ent) continue;
-        var extra;
-        try { extra = ent.ᴇոІ; } catch (e) { continue; }
-        if (extra === undefined || extra === null) continue;
-        var item;
-        try { item = ⲟ̠٦[extra >> 7]; } catch (e) { continue; }
-        if (!item) continue;
-        var packetId = 0;
-        try { packetId = item.ᴘܕ༦; } catch (e) {}
-        if (!(packetId > 0)) continue;
-        var pos = SADSAAGetPos(ent);
-        if (!pos) continue;
-        var eid = undefined;
-        try { eid = ent[ᴑ̸ᚁ]; } catch (e) {}
-        try { if (eid === undefined) eid = ent[ⲅ̶ᄈ]; } catch (e) {}
-        try { if (eid === undefined) eid = ent.id; } catch (e) {}
-        if (eid === undefined || eid === null || eid < 0) continue;
-        var epid = 0;
-        try { epid = ent.ո५７; } catch (e) {}
-        try { if (epid === undefined || epid === null) epid = 0; } catch (e) {}
-        var dx = pos.x - me.x, dy = pos.y - me.y;
-        var dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist > 1000) continue;
-        var ddx = pos.x - worldX, ddy = pos.y - worldY;
-        var distCursor = Math.sqrt(ddx * ddx + ddy * ddy);
-        var entAngle = Math.atan2(dy, dx);
-        var da = Math.abs(Math.atan2(Math.sin(entAngle - mouseAngle), Math.cos(entAngle - mouseAngle)));
-        var score = distCursor + da * 50;
-        if (score < bestScore) {
-          bestScore = score;
-          best = { packetId: packetId, id: eid, pid: epid };
-        }
-      }
-    }
-      return best;
-    } catch (e) { return null; }
-  }
+  document.addEventListener("mousemove", function (ev) {
+    _ASDSASDA_mouse.x = ev.clientX;
+    _ASDSASDA_mouse.y = ev.clientY;
+  }, true);
 
-  function SADSAAHandleActionOpen() {
+  /* ===== Current-client target/open =====
+     The current game already keeps the selected target on the local player:
+       ᴘߌ͢ = target entity id
+       ϲІ̙ = target/player id
+     We deliberately do not reference the removed World/Entitie objects.
+  */
+  function ASDSASDAHandleActionOpen() {
     try {
-      var target = SADSAAFindEntityUnderCursor();
-      if (target && target.packetId > 0) {
-        SADSAA_MOD.hit = false;
-        SADSAANetSend([target.packetId, target.id, target.pid || 0]);
-        return;
-      }
-      if (World && World.PLAYER) {
-        var packetId = World.PLAYER.ᴘܕ༦;
-        var buildingId = World.PLAYER.Іᴎࡆ;
-        var buildingPid = World.PLAYER.εߋߋ;
-        if (packetId > 0 && buildingId !== undefined && buildingId !== null && buildingId >= 0) {
-          SADSAA_MOD.hit = false;
-          SADSAANetSend([packetId, buildingId, buildingPid || 0]);
+      var me = ASDSASDAPlayer();
+      if (!me) return;
+
+      var targetId = me.ᴘߌ͢;
+      var targetPid = me.ϲІ̙;
+
+      if (targetId !== undefined && targetId !== null && targetId >= 0) {
+        ASDSASDA_MOD.hit = false;
+
+        // Packet 12 is the current client's native pickup/use packet.
+        if (targetPid !== undefined && targetPid !== null && targetPid >= 0) {
+          ASDSASDANetSend([12, targetPid]);
           return;
         }
-        var lootId = World.PLAYER.ⲣ̞ᄉ;
-        if (lootId !== undefined && lootId !== null && lootId >= 0) {
-          SADSAA_MOD.hit = false;
-          SADSAANetSend([12, lootId]);
-        }
+      }
+
+      // If no target is selected, use the current native target id if present.
+      if (targetPid !== undefined && targetPid !== null && targetPid >= 0) {
+        ASDSASDA_MOD.hit = false;
+        ASDSASDANetSend([12, targetPid]);
       }
     } catch (e) {}
   }
 
   document.addEventListener("mousedown", function (ev) {
-    if (ev.button === 2 && SADSAA_MOD.OpenEverythingByClick) {
-      SADSAA_MOD.hit = false;
-      SADSAAHookAttackBlock();
-      if (SADSAAIsConnected()) SADSAAHandleActionOpen();
+    if (ev.button === 2 && ASDSASDA_MOD.OpenEverythingByClick) {
+      ASDSASDA_MOD.hit = false;
+      if (ASDSASDAIsConnected()) ASDSASDAHandleActionOpen();
     }
   }, true);
 
   document.addEventListener("mouseup", function (ev) {
-    if (ev.button === 2) SADSAA_MOD.hit = true;
+    if (ev.button === 2) ASDSASDA_MOD.hit = true;
   }, true);
 
   document.addEventListener("contextmenu", function (ev) {
-    if (SADSAA_MOD.OpenEverythingByClick) ev.preventDefault();
+    if (ASDSASDA_MOD.OpenEverythingByClick) ev.preventDefault();
   }, true);
 
   /* ===== SpamChat ===== */
-  function SADSAASendChat(msg) {
+  function ASDSASDASendChat(msg) {
     try {
       if (!msg) return;
-      // 1) native client chat (handles rate-limit correctly)
-      try {
-        if (typeof ࡀܓ̸ !== "undefined" && typeof ࡀܓ̸.ѕމࠂ === "function") {
-          ࡀܓ̸.ѕމࠂ(msg);
-        } else {
-          SADSAANetSend([1, msg]);
-        }
-      } catch (e1) {
-        try { SADSAANetSend([1, msg]); } catch (e2) {}
-      }
-      // 2) local bubble if available
-      try {
-        if (World && World.PLAYER && World.players) {
-          var me = World.players[World.PLAYER.id];
-          if (me && me.text && me.text.push) me.text.push(msg);
-        }
-      } catch (e3) {}
+      ASDSASDANetSend([1, String(msg)]);
     } catch (e) {}
   }
 
-  function SADSAASpamChat() {
-    if (SADSAA_MOD.SpamChatEnabled) {
-      if (_SADSAA_spam_iv) clearInterval(_SADSAA_spam_iv);
-      SADSAASendChat(SADSAA_MOD.SpamChatText);
-      _SADSAA_spam_iv = setInterval(function () {
-        SADSAASendChat(SADSAA_MOD.SpamChatText);
+  function ASDSASDASpamChat() {
+    if (ASDSASDA_MOD.SpamChatEnabled) {
+      if (_ASDSASDA_spam_iv) clearInterval(_ASDSASDA_spam_iv);
+      ASDSASDASendChat(ASDSASDA_MOD.SpamChatText);
+      _ASDSASDA_spam_iv = setInterval(function () {
+        ASDSASDASendChat(ASDSASDA_MOD.SpamChatText);
       }, 5000);
-    } else {
-      if (_SADSAA_spam_iv) { clearInterval(_SADSAA_spam_iv); _SADSAA_spam_iv = null; }
+    } else if (_ASDSASDA_spam_iv) {
+      clearInterval(_ASDSASDA_spam_iv);
+      _ASDSASDA_spam_iv = null;
     }
   }
 
   /* ===== Copy nicknames ===== */
-  function SADSAACopyNickname(idStr) {
+  function ASDSASDACopyNickname(idStr) {
     try {
       var id = parseInt(idStr, 10);
-      if (!World || !World.players || !World.players[id]) { alert("Player not found"); return; }
-      var nick = SADSAAGetNick(World.players[id]).split("#")[0];
+      var players = ASDSASDAPlayers();
+      var p = players && players[id];
+      if (!p) { alert("Player not found"); return; }
+      var nick = ASDSASDAGetNick(p).split("#")[0];
       if (!nick) { alert("No nickname"); return; }
-      alert(nick);
       if (navigator.clipboard) navigator.clipboard.writeText(nick);
+      alert(nick);
     } catch (e) { alert("Error"); }
   }
 
-  function SADSAACopyAllNicknames() {
+  function ASDSASDACopyAllNicknames() {
     try {
+      var players = ASDSASDAPlayers();
       var result = [];
-      if (World && World.players) {
-        for (var pid in World.players) {
-          var n = SADSAAGetNick(World.players[pid]).replace(/#\d+$/, "");
+      if (players) {
+        for (var pid in players) {
+          var n = ASDSASDAGetNick(players[pid]).replace(/#\d+$/, "");
           if (n) result.push(n);
         }
       }
@@ -77715,228 +77625,187 @@
   }
 
   /* ===== PlayerList ===== */
-  function SADSAAEnsurePlayerList() {
-    if (_SADSAA_plOverlay && _SADSAA_plOverlay.parentNode) return _SADSAA_plOverlay;
-    _SADSAA_plOverlay = document.createElement("div");
-    _SADSAA_plOverlay.id = "SADSAA-playerlist";
-    _SADSAA_plOverlay.style.cssText = "position:fixed;inset:0;z-index:999998;background:rgba(0,0,0,0.55);color:#fff;font:13px Viga,Arial,sans-serif;overflow:auto;display:none;padding:16px 20px;pointer-events:none;";
-    (document.body || document.documentElement).appendChild(_SADSAA_plOverlay);
-    return _SADSAA_plOverlay;
+  function ASDSASDAEnsurePlayerList() {
+    if (_ASDSASDA_plOverlay && _ASDSASDA_plOverlay.parentNode) return _ASDSASDA_plOverlay;
+    _ASDSASDA_plOverlay = document.createElement("div");
+    _ASDSASDA_plOverlay.id = "ASDSASDA-playerlist";
+    _ASDSASDA_plOverlay.style.cssText = "position:fixed;inset:0;z-index:999998;background:rgba(0,0,0,.55);color:#fff;font:13px Viga,Arial,sans-serif;overflow:auto;display:none;padding:16px 20px;pointer-events:none";
+    (document.body || document.documentElement).appendChild(_ASDSASDA_plOverlay);
+    return _ASDSASDA_plOverlay;
   }
 
   setInterval(function () {
     try {
-      var ov = SADSAAEnsurePlayerList();
-      if (!SADSAA_MOD.PlayersListEnabled) { ov.style.display = "none"; return; }
-      ov.style.display = "block";
+      var ov = ASDSASDAEnsurePlayerList();
+      if (!ASDSASDA_MOD.PlayersListEnabled) { ov.style.display = "none"; return; }
+      var players = ASDSASDAPlayers();
+      var me = ASDSASDAPlayer();
       var rows = [], count = 0;
-      if (World && World.players) {
-        for (var pid in World.players) {
-          var nick = SADSAAGetNick(World.players[pid]);
+      if (players) {
+        for (var pid in players) {
+          var p = players[pid];
+          var nick = ASDSASDAGetNick(p);
           if (!nick) continue;
-          var isMe = false;
-          try { isMe = World.PLAYER && String(pid) === String(World.PLAYER.id); } catch (e) {}
-          rows.push('<div style="color:' + (isMe ? "#00FFFF" : "#fff") + ';min-width:200px">#' + pid + " " + nick.replace(/</g, "&lt;") + "</div>");
+          var isMe = !!me && String(pid) === String(me.id);
+          rows.push('<div style="color:' + (isMe ? "#00FFFF" : "#fff") + ';min-width:200px">#' + pid + ' ' + nick.replace(/</g, "&lt;") + '</div>');
           count++;
         }
       }
-      ov.innerHTML = '<div style="text-align:right;margin-bottom:10px;font-size:15px">People On Server: ' + count + "</div><div style=\"display:flex;flex-wrap:wrap;gap:6px 22px\">" + rows.join("") + "</div>";
+      ov.innerHTML = '<div style="text-align:right;margin-bottom:10px;font-size:15px">People On Server: ' + count + '</div><div style="display:flex;flex-wrap:wrap;gap:6px 22px">' + rows.join("") + '</div>';
+      ov.style.display = "block";
     } catch (e) {}
   }, 400);
 
-  /* ===== AutoLoot / AutoBuild (UNCHANGED logic) ===== */
-  function SADSAAFAutoLootTick() {
-    if (!SADSAA_MOD.FAutoLootEnabled) return;
+  /* ===== AutoLoot =====
+     Current client already stores the currently selected loot/entity id in ϲІ̙.
+     We only use that current native target; no obsolete Entitie scan.
+  */
+  function ASDSASDAFAutoLootTick() {
+    if (!ASDSASDA_MOD.FAutoLootEnabled) return;
     try {
-      if (typeof World === "undefined" || !World.PLAYER) return;
-      var now = Date.now();
-      if (now - SADSAA_MOD._lastLoot < 20) return;
-      SADSAA_MOD._lastLoot = now;
-
-      var lootId = World.PLAYER.ⲣ̞ᄉ;
-      if (lootId === undefined || lootId === null || lootId < 0) {
-        lootId = World.PLAYER.Ꮷ̙५;
-      }
-      if (lootId !== undefined && lootId !== null && lootId >= 0) {
-        SADSAANetSend([12, lootId]);
-      }
-
-      if (typeof Entitie === "undefined" || !Entitie["ⲥ༨ߊ"]) return;
-      var me = SADSAAGetPos(World.PLAYER);
+      var me = ASDSASDAPlayer();
       if (!me) return;
-      var range2 = 90000;
-      var typeId = 1;
-      try { if (typeof ⲅ̶ᄈ === "number") typeId = ⲅ̶ᄈ; } catch (e) {}
-      var sent = 0;
-      var maxSend = 8;
-      for (var ti = 1; ti <= 15 && sent < maxSend; ti++) {
-        var units = Entitie["ⲥ༨ߊ"][ti];
-        if (!units) continue;
-        var count = 0;
-        try { count = units.length || 0; } catch (e) {}
-        for (var i = 0; i < count && sent < maxSend; i++) {
-          var ent = null;
-          try { ent = units[i]; } catch (e) {}
-          if (!ent) continue;
-          var pos = SADSAAGetPos(ent);
-          if (!pos) continue;
-          var dx = me.x - pos.x, dy = me.y - pos.y;
-          if (dx * dx + dy * dy >= range2) continue;
-          var lid = undefined;
-          try { lid = ent[ⲅ̶ᄈ]; } catch (e) {}
-          if (lid === undefined) try { lid = ent[id]; } catch (e) {}
-          if (lid === undefined || lid === null || lid < 0) continue;
-          if (lid === lootId) continue;
-          SADSAANetSend([12, lid]);
-          sent++;
-        }
-      }
-    } catch (err) {}
-  }
-
-  function SADSAAAutoBuildTick() {
-    if (!SADSAA_MOD.AutoBuildEnabled) return;
-    try {
-      if (typeof World === "undefined" || !World.PLAYER) return;
       var now = Date.now();
-      if (now - SADSAA_MOD._lastBuild < 30) return;
-      var rot = World.PLAYER.о︅ᚂ;
-      var bi  = World.PLAYER.ᴀއ︆;
-      var bj  = World.PLAYER.аᴘ︋;
-      if (rot === undefined || bi === undefined || bj === undefined) return;
-      if (typeof bi === "number" && bi < 0) return;
-      if (typeof bj === "number" && bj < 0) return;
-      SADSAANetSend([14, rot, bi, bj]);
-      SADSAA_MOD._lastBuild = now;
-    } catch (err) {}
-  }
+      if (now - ASDSASDA_MOD._lastLoot < 35) return;
+      ASDSASDA_MOD._lastLoot = now;
 
-  /* ===== ZOOM (UNCHANGED logic) ===== */
-  function SADSAAApplyZoom(dir, steps) {
-    try {
-      if (typeof ⲅᄄ๒ === "undefined") return;
-      steps = steps || 1;
-      var step = 0.1;
-      var maxZ = 1.0;
-      var minZ = -1.0;
-      for (var s = 0; s < steps; s++) {
-        var cur = ⲅᄄ๒[е︁̝];
-        if (typeof cur !== "number") cur = 0;
-        if (dir > 0) {
-          if (cur >= maxZ) break;
-          cur += step;
-          if (cur > maxZ) cur = maxZ;
-        } else {
-          if (cur <= minZ) break;
-          cur -= step;
-          if (cur < minZ) cur = minZ;
-        }
-        ⲅᄄ๒[е︁̝] = cur;
+      var lootId = me.ϲІ̙;
+      if (lootId !== undefined && lootId !== null && lootId >= 0) {
+        ASDSASDANetSend([12, lootId]);
       }
-      SADSAA_MOD.zoom = ⲅᄄ๒[е︁̝];
     } catch (e) {}
   }
 
-  function SADSAAZoomTick() {
+  /* ===== AutoBuild =====
+     These are the actual current-client build fields used by the native
+     packet-14 path: Іܒ०, ԁ๘０, ᴏކ̴.
+  */
+  function ASDSASDAAutoBuildTick() {
+    if (!ASDSASDA_MOD.AutoBuildEnabled) return;
     try {
-      if (typeof ⲅᄄ๒ !== "undefined") {
-        var z = ⲅᄄ๒[е︁̝];
-        if (typeof z === "number") SADSAA_MOD.zoom = z;
+      var me = ASDSASDAPlayer();
+      if (!me) return;
+      var now = Date.now();
+      if (now - ASDSASDA_MOD._lastBuild < 30) return;
+
+      var rot = me.Іܒ०;
+      var x = me.ԁ๘０;
+      var y = me.ᴏކ̴;
+      if (rot === undefined || x === undefined || y === undefined) return;
+      if (!isFinite(rot) || !isFinite(x) || !isFinite(y)) return;
+
+      // Same packet shape as the current native build path.
+      ASDSASDANetSend([14, rot, x, y]);
+      ASDSASDA_MOD._lastBuild = now;
+    } catch (e) {}
+  }
+
+  /* ===== ZOOM =====
+     Current client zoom is ɑ̡५[ᴌᚁܘ]. Native controls change it by 0.1/0.05.
+  */
+  function ASDSASDAApplyZoom(dir, steps) {
+    try {
+      if (typeof ɑ̡५ === "undefined") return;
+      steps = steps || 1;
+      var cur = Number(ɑ̡५[ᴌᚁܘ]);
+      if (!isFinite(cur)) cur = 0;
+      var step = 0.1;
+      var maxZ = 1.5;
+      var minZ = -0.95;
+      cur += (dir > 0 ? step : -step) * steps;
+      if (cur > maxZ) cur = maxZ;
+      if (cur < minZ) cur = minZ;
+      ɑ̡५[ᴌᚁܘ] = cur;
+      ASDSASDA_MOD.zoom = cur;
+    } catch (e) {}
+  }
+
+  function ASDSASDAZoomTick() {
+    try {
+      if (typeof ɑ̡५ !== "undefined") {
+        var z = Number(ɑ̡५[ᴌᚁܘ]);
+        if (isFinite(z)) ASDSASDA_MOD.zoom = z;
       }
     } catch (e) {}
   }
 
   setInterval(function () {
-    try { SADSAAFAutoLootTick(); } catch (e) {}
-    try { SADSAAAutoBuildTick(); } catch (e2) {}
-    try { SADSAAZoomTick(); } catch (e3) {}
+    try { ASDSASDAFAutoLootTick(); } catch (e) {}
+    try { ASDSASDAAutoBuildTick(); } catch (e2) {}
+    try { ASDSASDAZoomTick(); } catch (e3) {}
   }, 25);
 
   window.addEventListener("keydown", function (ev) {
-    if (ev.code === "Equal" || ev.code === "NumpadAdd") {
-      SADSAAApplyZoom(1, 1);
-      return;
-    }
-    if (ev.code === "Minus" || ev.code === "NumpadSubtract") {
-      SADSAAApplyZoom(-1, 1);
-      return;
-    }
+    if (ev.code === "Equal" || ev.code === "NumpadAdd") { ASDSASDAApplyZoom(1, 1); return; }
+    if (ev.code === "Minus" || ev.code === "NumpadSubtract") { ASDSASDAApplyZoom(-1, 1); return; }
     if (ev.repeat) return;
     try {
       var t = ev.target;
       if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable)) return;
     } catch (e) {}
-    if (ev.code === SADSAA_MOD.FAutoLootKey) {
-      SADSAA_MOD.FAutoLootEnabled = !SADSAA_MOD.FAutoLootEnabled;
-      console.log("[SADSAA] AutoLoot: " + (SADSAA_MOD.FAutoLootEnabled ? "ON" : "OFF"));
-    }
-    if (ev.code === SADSAA_MOD.AutoBuildKey) {
-      SADSAA_MOD.AutoBuildEnabled = !SADSAA_MOD.AutoBuildEnabled;
-      console.log("[SADSAA] AutoBuild: " + (SADSAA_MOD.AutoBuildEnabled ? "ON" : "OFF"));
-    }
-    if (ev.code === SADSAA_MOD.PlayersListKey) {
-      SADSAA_MOD.PlayersListEnabled = !SADSAA_MOD.PlayersListEnabled;
-    }
+    if (ev.code === ASDSASDA_MOD.FAutoLootKey) ASDSASDA_MOD.FAutoLootEnabled = !ASDSASDA_MOD.FAutoLootEnabled;
+    if (ev.code === ASDSASDA_MOD.AutoBuildKey) ASDSASDA_MOD.AutoBuildEnabled = !ASDSASDA_MOD.AutoBuildEnabled;
+    if (ev.code === ASDSASDA_MOD.PlayersListKey) ASDSASDA_MOD.PlayersListEnabled = !ASDSASDA_MOD.PlayersListEnabled;
   }, true);
 
   window.addEventListener("wheel", function (ev) {
     try {
       ev.preventDefault();
-      SADSAAApplyZoom(ev.deltaY < 0 ? 1 : -1, 1);
+      ASDSASDAApplyZoom(ev.deltaY < 0 ? 1 : -1, 1);
     } catch (e) {}
   }, { passive: false });
 
   /* ===== dat.GUI menu ===== */
-  function SADSAALoadDatGui(cb) {
+  function ASDSASDALoadDatGui(cb) {
     if (window.dat && window.dat.GUI) { cb(); return; }
     var s = document.createElement("script");
     s.src = "https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.9/dat.gui.min.js";
     s.onload = function () { cb(); };
-    s.onerror = function () { console.warn("[SADSAA] dat.gui CDN fail"); };
+    s.onerror = function () { console.warn("[ASDSASDA] dat.gui CDN fail"); };
     document.head.appendChild(s);
   }
 
-  function SADSAABuildMenu() {
+  function ASDSASDABuildMenu() {
     try {
       if (!window.dat || !dat.GUI) return;
       var gui = new dat.GUI({ width: 300 });
       gui.domElement.style.zIndex = "1000000";
 
       var fAuto = gui.addFolder("Automation");
-      fAuto.add(SADSAA_MOD, "FAutoLootEnabled").name("Fast AutoLoot (Q)");
-      fAuto.add(SADSAA_MOD, "AutoBuildEnabled").name("AutoBuild (B)");
+      fAuto.add(ASDSASDA_MOD, "FAutoLootEnabled").name("Fast AutoLoot (Q)");
+      fAuto.add(ASDSASDA_MOD, "AutoBuildEnabled").name("AutoBuild (B)");
       fAuto.open();
 
       var fRaid = gui.addFolder("Raid / Open");
-      fRaid.add(SADSAA_MOD, "OpenEverythingByClick").name("Open under Cursor (RMB)");
+      fRaid.add(ASDSASDA_MOD, "OpenEverythingByClick").name("Open under Cursor (RMB)");
       fRaid.open();
 
       var fChat = gui.addFolder("Spam Chat");
-      fChat.add(SADSAA_MOD, "SpamChatEnabled").name("Enabled").onChange(function () { SADSAASpamChat(); });
-      fChat.add(SADSAA_MOD, "SpamChatText").name("Text");
+      fChat.add(ASDSASDA_MOD, "SpamChatEnabled").name("Enabled").onChange(function () { ASDSASDASpamChat(); });
+      fChat.add(ASDSASDA_MOD, "SpamChatText").name("Text");
       fChat.open();
 
       var fNick = gui.addFolder("Copy Nicknames");
-      fNick.add(SADSAA_MOD, "PlayerId").name("Player ID");
+      fNick.add(ASDSASDA_MOD, "PlayerId").name("Player ID");
       fNick.add({ Copy: function () {
-        var id = SADSAA_MOD.PlayerId;
-        if (/^\d+$/.test(String(id)) && +id >= 1 && +id <= 120) SADSAACopyNickname(id);
+        var id = ASDSASDA_MOD.PlayerId;
+        if (/^\d+$/.test(String(id)) && +id >= 1 && +id <= 120) ASDSASDACopyNickname(id);
         else alert("Enter valid id 1-120");
       } }, "Copy");
-      fNick.add({ CopyAll: function () { SADSAACopyAllNicknames(); } }, "CopyAll").name("Copy All");
+      fNick.add({ CopyAll: function () { ASDSASDACopyAllNicknames(); } }, "CopyAll").name("Copy All");
       fNick.open();
 
       var fList = gui.addFolder("Player List");
-      fList.add(SADSAA_MOD, "PlayersListEnabled").name("Show List (L)");
+      fList.add(ASDSASDA_MOD, "PlayersListEnabled").name("Show List (L)");
       fList.open();
 
       var fZoom = gui.addFolder("Zoom");
-      fZoom.add(SADSAA_MOD, "zoom", -1, 1).step(0.05).name("Zoom").listen();
-      fZoom.add({ ZoomIn: function () { SADSAAApplyZoom(1, 1); } }, "ZoomIn");
-      fZoom.add({ ZoomOut: function () { SADSAAApplyZoom(-1, 1); } }, "ZoomOut");
+      fZoom.add(ASDSASDA_MOD, "zoom", -0.95, 1.5).step(0.05).name("Zoom").listen();
+      fZoom.add({ ZoomIn: function () { ASDSASDAApplyZoom(1, 1); } }, "ZoomIn");
+      fZoom.add({ ZoomOut: function () { ASDSASDAApplyZoom(-1, 1); } }, "ZoomOut");
 
       window.addEventListener("keydown", function (ev) {
-        if (ev.code === SADSAA_MOD.ModMenuKey) {
+        if (ev.code === ASDSASDA_MOD.ModMenuKey) {
           try {
             var el = gui.domElement;
             el.style.display = (el.style.display === "none") ? "" : "none";
@@ -77944,20 +77813,19 @@
         }
       }, true);
 
-      console.log("[SADSAA] menu ready (H hide/show)");
-    } catch (e) { console.warn("[SADSAA] menu error", e); }
+      console.log("[ASDSASDA] menu ready (H hide/show)");
+    } catch (e) { console.warn("[ASDSASDA] menu error", e); }
   }
 
-  (function SADSAAWaitGui() {
-    if (!document.body) { setTimeout(SADSAAWaitGui, 100); return; }
-    SADSAALoadDatGui(function () { setTimeout(SADSAABuildMenu, 800); });
+  (function ASDSASDAWaitGui() {
+    if (!document.body) { setTimeout(ASDSASDAWaitGui, 100); return; }
+    ASDSASDALoadDatGui(function () { setTimeout(ASDSASDABuildMenu, 800); });
   })();
 
-  window.SADSAA_MOD = SADSAA_MOD;
-  // ========== END SADSAA MOD ==========
-  
+  window.ASDSASDA_MOD = ASDSASDA_MOD;
+  // ========== END ASDSASDA MOD ==========
   function ࡀ٢ε() {
-    α६๑ = ᴌе︀ && document.body !== null && document[α̉๖]("chat") !== null;
+    ܐ༠ܚ = Іߓއ && document[ᴘᄈ̡]("nickname") !== null && document[օ̎ࡈ]("terms") !== null && document[օ̎ࡈ]("serverList") !== null && document[ࡀᄄ︆]("changelog") !== null && document[ᴘᄈ̡]("howtoplay") !== null && document[αࡉ͏]("featuredVideo") !== null && document[αࡉ͏]("bebebaba") !== null && document[ࡀᄄ︆]("preroll") !== null && document[օ̎ࡈ]("footer") !== null && document[օ̎ࡈ]("chat") !== null;
     if (ܐ༠ܚ === true) {
       ⲣߌߋ.Ꮷ̶５();
       ࡀܒ༠.Ꮷ̶５();
