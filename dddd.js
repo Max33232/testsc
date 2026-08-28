@@ -78606,213 +78606,221 @@
     FAutoLootKey: "KeyQ",
     AutoBuildEnabled: false,
     AutoBuildKey: "KeyB",
-    _lastBuild: 0,
-    _lastLoot: 0,
-    zoom: 0,
     OpenEverythingByClick: true,
     SpamChatEnabled: false,
     SpamChatText: "hello",
+    SpamChatInterval: 5000,
     PlayersListEnabled: false,
     PlayersListKey: "KeyL",
     PlayerId: "",
-    hit: true,
+    zoom: 0,
     ModMenuKey: "KeyH"
   };
 
-  var _ASDSASDA_spam_iv = null;
+  var _ASDSASDA_spam_timer = null;
   var _ASDSASDA_plOverlay = null;
-  var _ASDSASDA_mouse = { x: 0, y: 0 };
+  var _ASDSASDA_lastLoot = 0;
+  var _ASDSASDA_lastBuild = 0;
 
-  // Current client state: р๗ѕ.ІᄄІ = entity/player array, р๗ѕ.ܐ٣а = local player.
   function ASDSASDAPlayer() {
-    try { return (typeof р๗ѕ !== "undefined" && р๗ѕ.ܐ٣а) ? р๗ѕ.ܐ٣а : null; }
-    catch (e) { return null; }
-  }
-  function ASDSASDAPlayers() {
-    try { return (typeof р๗ѕ !== "undefined" && р๗ѕ.ІᄄІ) ? р๗ѕ.ІᄄІ : null; }
-    catch (e) { return null; }
-  }
-  function ASDSASDAGetId(obj, fallback) {
-    try { if (obj && obj[ܐߋࠄ] !== undefined) return obj[ܐߋࠄ]; } catch (e) {}
-    return fallback;
-  }
-  function ASDSASDAGetNick(obj) {
-    try { return obj && obj.ⲟ༧̝ ? String(obj.ⲟ༧̝) : ""; } catch (e) { return ""; }
+    try { return р๗ѕ.ܐ٣а; } catch (e) { return null; }
   }
 
-  // Native transport used by the current client: encoder -> binary WebSocket send.
-  function ASDSASDANetSend(arr) {
+  function ASDSASDAPlayers() {
+    try { return р๗ѕ.ІᄄІ; } catch (e) { return null; }
+  }
+
+  function ASDSASDAPlayerId(p) {
     try {
-      if (!Array.isArray(arr) || typeof ᴉ͠︂ !== "function" || !ірܖ || typeof ірܖ.ԁ̆ࡄ !== "function") return false;
-      ᴉ͠︂(ірܖ.ԁ̆ࡄ(arr));
+      if (p && p[ܐߋࠄ] !== undefined && p[ܐߋࠄ] !== null) return p[ܐߋࠄ];
+    } catch (e) {}
+    return null;
+  }
+
+  function ASDSASDANick(p) {
+    try { return p && p.ⲟ༧̝ ? String(p.ⲟ༧̝) : ""; } catch (e) { return ""; }
+  }
+
+  function ASDSASDARefreshOwnId() {
+    try {
+      var me = ASDSASDAPlayer();
+      var id = ASDSASDAPlayerId(me);
+      if (id !== null) ASDSASDA_MOD.PlayerId = String(id);
+      return id;
+    } catch (e) { return null; }
+  }
+
+  // Use the game's own network wrapper. This is the exact path already used
+  // by the current client for packets such as [12, target] and [14, x, y].
+  function ASDSASDASendPacket(packet) {
+    try {
+      if (!Array.isArray(packet)) return false;
+      ࡀո๔.рɑބ(JSON.stringify(packet));
       return true;
     } catch (e) { return false; }
   }
-  function ASDSASDAIsConnected() {
-    try { return typeof ᴑ๗๑ !== "undefined" && !!ᴑ๗๑ && ᴑ๗๑.readyState === 1; }
-    catch (e) { return false; }
-  }
 
-  document.addEventListener("mousemove", function (ev) {
-    _ASDSASDA_mouse.x = ev.clientX;
-    _ASDSASDA_mouse.y = ev.clientY;
-  }, true);
-
-  // ===== Open / Loot =====
-  // Native E/Space action in this version sends packet [12, localPlayer.ɑ７٠].
-  function ASDSASDAHandleActionOpen() {
+  // Use the game's native chat function. It applies the same cooldown/mute
+  // handling as normal chat input.
+  function ASDSASDASendChat(msg) {
     try {
-      var me = ASDSASDAPlayer();
-      if (!me) return false;
-      var target = me.ɑ７٠;
-      if (target === undefined || target === null || Number(target) < 0) return false;
-      ASDSASDA_MOD.hit = false;
-      return ASDSASDANetSend([12, Number(target)]);
+      if (!msg || typeof ࡀո๔.ѕа０ !== "function") return false;
+      ࡀո๔.ѕа０(String(msg));
+      return true;
     } catch (e) { return false; }
   }
-  document.addEventListener("mousedown", function (ev) {
-    if (ev.button === 2 && ASDSASDA_MOD.OpenEverythingByClick) {
-      if (ASDSASDAIsConnected()) ASDSASDAHandleActionOpen();
+
+  function ASDSASDASpamChatStop() {
+    if (_ASDSASDA_spam_timer !== null) {
+      clearTimeout(_ASDSASDA_spam_timer);
+      _ASDSASDA_spam_timer = null;
     }
-  }, true);
-  document.addEventListener("mouseup", function (ev) {
-    if (ev.button === 2) ASDSASDA_MOD.hit = true;
-  }, true);
+  }
+
+  function ASDSASDASpamChatLoop() {
+    ASDSASDASpamChatStop();
+    if (!ASDSASDA_MOD.SpamChatEnabled) return;
+
+    ASDSASDASendChat(ASDSASDA_MOD.SpamChatText);
+    _ASDSASDA_spam_timer = setTimeout(ASDSASDASpamChatLoop,
+      Math.max(1000, Number(ASDSASDA_MOD.SpamChatInterval) || 5000));
+  }
+
+  function ASDSASDASpamChat() {
+    if (ASDSASDA_MOD.SpamChatEnabled) ASDSASDASpamChatLoop();
+    else ASDSASDASpamChatStop();
+  }
+
+  // Current client target is stored on the local player as ɑ７٠.
+  function ASDSASDAGetTargetId() {
+    try {
+      var me = ASDSASDAPlayer();
+      if (!me) return -1;
+      var id = Number(me.ɑ７٠);
+      return isFinite(id) ? id : -1;
+    } catch (e) { return -1; }
+  }
+
+  function ASDSASDAOpenTarget() {
+    var target = ASDSASDAGetTargetId();
+    if (target < 0) return false;
+    return ASDSASDASendPacket([12, target]);
+  }
+
   document.addEventListener("contextmenu", function (ev) {
     if (ASDSASDA_MOD.OpenEverythingByClick) ev.preventDefault();
   }, true);
 
-  // ===== Spam Chat =====
-  // The current native chat function is ࡀո๔.ѕа０(text): it performs the real
-  // cooldown check and sends packet [1, text].
-  function ASDSASDASendChat(msg) {
-    try {
-      msg = String(msg == null ? "" : msg).trim();
-      if (!msg || typeof ࡀո๔ === "undefined" || typeof ࡀո๔.ѕа０ !== "function") return false;
-      var left = ࡀո๔.ѕа０(msg);
-      return left === 0 || left === undefined;
-    } catch (e) { return false; }
-  }
-  function ASDSASDASpamChat() {
-    if (_ASDSASDA_spam_iv) { clearInterval(_ASDSASDA_spam_iv); _ASDSASDA_spam_iv = null; }
-    if (!ASDSASDA_MOD.SpamChatEnabled) return;
-    ASDSASDASendChat(ASDSASDA_MOD.SpamChatText);
-    _ASDSASDA_spam_iv = setInterval(function () {
-      if (!ASDSASDA_MOD.SpamChatEnabled) return;
-      ASDSASDASendChat(ASDSASDA_MOD.SpamChatText);
-    }, 5500);
-  }
+  document.addEventListener("mousedown", function (ev) {
+    if (ev.button === 2 && ASDSASDA_MOD.OpenEverythingByClick) ASDSASDAOpenTarget();
+  }, true);
 
-  // ===== Nicknames / IDs =====
+  // Copy a nickname by the real player id used by the current client.
   function ASDSASDACopyNickname(idStr) {
     try {
-      var id = String(idStr).trim();
+      var id = parseInt(idStr, 10);
       var players = ASDSASDAPlayers();
-      var p = players && players[Number(id)];
-      if (!p && players) {
-        for (var k in players) {
-          if (String(ASDSASDAGetId(players[k], k)) === id) { p = players[k]; break; }
-        }
-      }
+      var p = players && players[id];
       if (!p) { alert("Player not found"); return; }
-      var nick = ASDSASDAGetNick(p).split("#")[0];
+      var nick = ASDSASDANick(p).replace(/#\d+$/, "");
       if (!nick) { alert("No nickname"); return; }
-      if (navigator.clipboard) navigator.clipboard.writeText(nick);
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(nick);
       alert(nick);
     } catch (e) { alert("Error"); }
   }
+
   function ASDSASDACopyAllNicknames() {
     try {
-      var players = ASDSASDAPlayers(), result = [];
-      if (players) for (var k in players) {
-        var n = ASDSASDAGetNick(players[k]).replace(/#\\d+$/, "");
-        if (n) result.push(n);
+      var players = ASDSASDAPlayers();
+      var result = [];
+      if (players) {
+        for (var i = 0; i < players.length; i++) {
+          var n = ASDSASDANick(players[i]).replace(/#\d+$/, "");
+          if (n) result.push(n);
+        }
       }
-      if (result.length) {
-        if (navigator.clipboard) navigator.clipboard.writeText(result.join("\
-"));
-        alert("Copied " + result.length + " nicknames");
-      } else alert("No players found");
+      if (!result.length) { alert("No players found"); return; }
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(result.join("\n"));
+      alert("Copied " + result.length + " nicknames");
     } catch (e) { alert("Error"); }
   }
 
-  // ===== Player List =====
   function ASDSASDAEnsurePlayerList() {
     if (_ASDSASDA_plOverlay && _ASDSASDA_plOverlay.parentNode) return _ASDSASDA_plOverlay;
     _ASDSASDA_plOverlay = document.createElement("div");
     _ASDSASDA_plOverlay.id = "ASDSASDA-playerlist";
-    _ASDSASDA_plOverlay.style.cssText = "position:fixed;inset:0;z-index:999998;background:rgba(0,0,0,.55);color:#fff;font:13px Viga,Arial,sans-serif;overflow:auto;display:none;padding:16px 20px;pointer-events:none";
+    _ASDSASDA_plOverlay.style.cssText =
+      "position:fixed;left:12px;top:12px;z-index:999998;background:rgba(0,0,0,.72);" +
+      "color:#fff;font:14px Arial,sans-serif;max-height:80vh;overflow:auto;display:none;" +
+      "padding:12px 16px;border-radius:6px;pointer-events:none;min-width:240px";
     (document.body || document.documentElement).appendChild(_ASDSASDA_plOverlay);
     return _ASDSASDA_plOverlay;
   }
+
   setInterval(function () {
     try {
+      ASDSASDARefreshOwnId();
       var ov = ASDSASDAEnsurePlayerList();
       if (!ASDSASDA_MOD.PlayersListEnabled) { ov.style.display = "none"; return; }
-      var players = ASDSASDAPlayers(), me = ASDSASDAPlayer(), rows = [], count = 0;
-      if (players) for (var k in players) {
-        var p = players[k], nick = ASDSASDAGetNick(p);
-        if (!nick) continue;
-        var pid = ASDSASDAGetId(p, k);
-        var myId = ASDSASDAGetId(me, "");
-        var isMe = String(pid) === String(myId);
-        var safe = nick.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        rows.push('<div style="color:' + (isMe ? "#00FFFF" : "#fff") + ';min-width:200px">#' + pid + ' ' + safe + '</div>');
-        count++;
+
+      var players = ASDSASDAPlayers();
+      var me = ASDSASDAPlayer();
+      var myId = ASDSASDAPlayerId(me);
+      var rows = [];
+      var count = 0;
+
+      if (players) {
+        for (var i = 0; i < players.length; i++) {
+          var p = players[i];
+          if (!p) continue;
+          var id = ASDSASDAPlayerId(p);
+          var nick = ASDSASDANick(p);
+          if (id === null || !nick) continue;
+          var safe = nick.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+          var mine = String(id) === String(myId);
+          rows.push("<div style='padding:2px 0;color:" + (mine ? "#00ffff" : "#fff") + "'>" +
+            String(id) + " — " + safe + "</div>");
+          count++;
+        }
       }
-      ov.innerHTML = '<div style="text-align:right;margin-bottom:10px;font-size:15px">People On Server: ' + count + '</div><div style="display:flex;flex-wrap:wrap;gap:6px 22px">' + rows.join("") + '</div>';
+
+      ov.innerHTML = "<div style='font-weight:bold;margin-bottom:7px'>People On Server: " + count +
+        "</div>" + rows.join("");
       ov.style.display = "block";
     } catch (e) {}
-  }, 400);
+  }, 300);
 
-  // ===== AutoLoot =====
+  // Same packet 12 used by the native E-key path.
   function ASDSASDAFAutoLootTick() {
     if (!ASDSASDA_MOD.FAutoLootEnabled) return;
-    try {
-      var me = ASDSASDAPlayer();
-      if (!me) return;
-      var now = Date.now();
-      if (now - ASDSASDA_MOD._lastLoot < 35) return;
-      var target = me.ɑ７٠;
-      if (target === undefined || target === null || Number(target) < 0) return;
-      ASDSASDANetSend([12, Number(target)]);
-      ASDSASDA_MOD._lastLoot = now;
-    } catch (e) {}
+    var now = Date.now();
+    if (now - _ASDSASDA_lastLoot < 80) return;
+    _ASDSASDA_lastLoot = now;
+    var target = ASDSASDAGetTargetId();
+    if (target >= 0) ASDSASDASendPacket([12, target]);
   }
 
-  // ===== AutoBuild =====
-  // Exact native packet-14 fields in this version.
+  // Same packet 14 and fields used by the current native build path.
   function ASDSASDAAutoBuildTick() {
     if (!ASDSASDA_MOD.AutoBuildEnabled) return;
+    var now = Date.now();
+    if (now - _ASDSASDA_lastBuild < 80) return;
     try {
       var me = ASDSASDAPlayer();
       if (!me) return;
-      if (me.ܐᄅр !== 1 || me.ⲅ२ᚅ !== 1) return;
-      var now = Date.now();
-      if (now - ASDSASDA_MOD._lastBuild < 30) return;
-      var a = me.ࡀܜ６, b = me.ᴀ᠌ᴉ, c = me.ρ̆４;
-      if (!isFinite(Number(a)) || !isFinite(Number(b)) || !isFinite(Number(c))) return;
-      if (ASDSASDANetSend([14, Number(a), Number(b), Number(c)])) ASDSASDA_MOD._lastBuild = now;
+      var a = Number(me.ࡀܜ６);
+      var b = Number(me.ᴀ᠌ᴉ);
+      var c = Number(me.ρ̆４);
+      if (!isFinite(a) || !isFinite(b) || !isFinite(c)) return;
+      if (ASDSASDASendPacket([14, a, b, c])) _ASDSASDA_lastBuild = now;
     } catch (e) {}
   }
 
-  // ===== Zoom =====
-  function ASDSASDAApplyZoom(dir, steps) {
-    try {
-      if (typeof ѕе̝ === "undefined") return;
-      steps = steps || 1;
-      var cur = Number(ѕе̝[ɑ̌ࡂ]);
-      if (!isFinite(cur)) cur = 0;
-      cur += (dir > 0 ? 0.1 : -0.1) * steps;
-      if (cur > 1.5) cur = 1.5;
-      if (cur < -0.95) cur = -0.95;
-      ѕе̝[ɑ̌ࡂ] = cur;
-      ASDSASDA_MOD.zoom = cur;
-    } catch (e) {}
-  }
+  // The new client exposes zoom through its own zoom controls. Keep the
+  // mod-side value in sync without assuming the old obfuscated zoom variable.
   function ASDSASDAZoomTick() {
     try {
-      if (typeof ѕе̝ !== "undefined") { var z = Number(ѕе̝[ɑ̌ࡂ]); if (isFinite(z)) ASDSASDA_MOD.zoom = z; }
+      if (typeof ᴀܜ٠ !== "undefined" && isFinite(Number(ᴀܜ٠))) ASDSASDA_MOD.zoom = Number(ᴀܜ٠);
     } catch (e) {}
   }
 
@@ -78820,83 +78828,84 @@
     try { ASDSASDAFAutoLootTick(); } catch (e) {}
     try { ASDSASDAAutoBuildTick(); } catch (e2) {}
     try { ASDSASDAZoomTick(); } catch (e3) {}
-  }, 25);
+  }, 50);
 
   window.addEventListener("keydown", function (ev) {
-    if (ev.code === "Equal" || ev.code === "NumpadAdd") { ASDSASDAApplyZoom(1, 1); return; }
-    if (ev.code === "Minus" || ev.code === "NumpadSubtract") { ASDSASDAApplyZoom(-1, 1); return; }
-    if (ev.repeat) return;
     try {
       var t = ev.target;
       if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable)) return;
     } catch (e) {}
+
+    if (ev.repeat) return;
     if (ev.code === ASDSASDA_MOD.FAutoLootKey) ASDSASDA_MOD.FAutoLootEnabled = !ASDSASDA_MOD.FAutoLootEnabled;
     if (ev.code === ASDSASDA_MOD.AutoBuildKey) ASDSASDA_MOD.AutoBuildEnabled = !ASDSASDA_MOD.AutoBuildEnabled;
     if (ev.code === ASDSASDA_MOD.PlayersListKey) ASDSASDA_MOD.PlayersListEnabled = !ASDSASDA_MOD.PlayersListEnabled;
+    if (ev.code === ASDSASDA_MOD.ModMenuKey) {
+      var gui = window.ASDSASDA_GUI;
+      if (gui && gui.domElement) gui.domElement.style.display = gui.domElement.style.display === "none" ? "" : "none";
+    }
   }, true);
 
-  window.addEventListener("wheel", function (ev) {
-    try { ev.preventDefault(); ASDSASDAApplyZoom(ev.deltaY < 0 ? 1 : -1, 1); } catch (e) {}
-  }, { passive: false });
-
-  // ===== dat.GUI menu =====
   function ASDSASDALoadDatGui(cb) {
     if (window.dat && window.dat.GUI) { cb(); return; }
     var s = document.createElement("script");
     s.src = "https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.9/dat.gui.min.js";
     s.onload = function () { cb(); };
     s.onerror = function () { console.warn("[ASDSASDA] dat.gui CDN fail"); };
-    document.head.appendChild(s);
+    (document.head || document.documentElement).appendChild(s);
   }
+
   function ASDSASDABuildMenu() {
     try {
-      if (!window.dat || !dat.GUI) return;
-      var gui = new dat.GUI({ width: 300 });
+      if (!window.dat || !window.dat.GUI) return;
+      var gui = new dat.GUI({ width: 310 });
       gui.domElement.style.zIndex = "1000000";
+      window.ASDSASDA_GUI = gui;
+
       var fAuto = gui.addFolder("Automation");
       fAuto.add(ASDSASDA_MOD, "FAutoLootEnabled").name("Fast AutoLoot (Q)");
       fAuto.add(ASDSASDA_MOD, "AutoBuildEnabled").name("AutoBuild (B)");
       fAuto.open();
+
       var fRaid = gui.addFolder("Raid / Open");
       fRaid.add(ASDSASDA_MOD, "OpenEverythingByClick").name("Open under Cursor (RMB)");
       fRaid.open();
+
       var fChat = gui.addFolder("Spam Chat");
-      fChat.add(ASDSASDA_MOD, "SpamChatEnabled").name("Enabled").onChange(function () { ASDSASDASpamChat(); });
+      fChat.add(ASDSASDA_MOD, "SpamChatEnabled").name("Enabled").onChange(ASDSASDASpamChat);
       fChat.add(ASDSASDA_MOD, "SpamChatText").name("Text");
+      fChat.add(ASDSASDA_MOD, "SpamChatInterval", 1000, 30000).step(500).name("Interval ms");
+      fChat.add({ SendNow: function () { ASDSASDASendChat(ASDSASDA_MOD.SpamChatText); } }, "SendNow");
       fChat.open();
+
       var fNick = gui.addFolder("Copy Nicknames");
-      fNick.add(ASDSASDA_MOD, "PlayerId").name("Player ID");
+      fNick.add(ASDSASDA_MOD, "PlayerId").name("Player ID").listen();
       fNick.add({ Copy: function () { ASDSASDACopyNickname(ASDSASDA_MOD.PlayerId); } }, "Copy");
-      fNick.add({ CopyAll: function () { ASDSASDACopyAllNicknames(); } }, "CopyAll").name("Copy All");
+      fNick.add({ CopyAll: function () { ASDSASDACopyAllNicknames(); } }, "CopyAll");
       fNick.open();
+
       var fList = gui.addFolder("Player List");
-      fList.add(ASDSASDA_MOD, "PlayersListEnabled").name("Show List (L)");
+      fList.add(ASDSASDA_MOD, "PlayersListEnabled").name("Show IDs + Nicks (L)");
       fList.open();
+
       var fZoom = gui.addFolder("Zoom");
-      fZoom.add(ASDSASDA_MOD, "zoom", -0.95, 1.5).step(0.05).name("Zoom").listen();
-      fZoom.add({ ZoomIn: function () { ASDSASDAApplyZoom(1, 1); } }, "ZoomIn");
-      fZoom.add({ ZoomOut: function () { ASDSASDAApplyZoom(-1, 1); } }, "ZoomOut");
-      fZoom.open();
-      window.addEventListener("keydown", function (ev) {
-        if (ev.code === ASDSASDA_MOD.ModMenuKey) {
-          try { var el = gui.domElement; el.style.display = (el.style.display === "none") ? "" : "none"; } catch (e) {}
-        }
-      }, true);
+      fZoom.add(ASDSASDA_MOD, "zoom").name("Current zoom").listen();
+      fZoom.add({ ZoomIn: function () {
+        try { if (typeof ոߑ̘ !== "undefined") ոߑ̘.ιа٢(); } catch (e) {}
+      } }, "ZoomIn");
+      fZoom.add({ ZoomOut: function () {
+        try { if (typeof ᴘނ̈ !== "undefined") ᴘނ̈.ιа٢(); } catch (e) {}
+      } }, "ZoomOut");
+
       console.log("[ASDSASDA] menu ready (H hide/show)");
     } catch (e) { console.warn("[ASDSASDA] menu error", e); }
   }
+
   (function ASDSASDAWaitGui() {
     if (!document.body) { setTimeout(ASDSASDAWaitGui, 100); return; }
-    ASDSASDALoadDatGui(function () { setTimeout(ASDSASDABuildMenu, 800); });
+    ASDSASDARefreshOwnId();
+    ASDSASDALoadDatGui(function () { setTimeout(ASDSASDABuildMenu, 500); });
   })();
-
-  // Fill the Player ID field automatically from the current native player.
-  setInterval(function () {
-    try {
-      var me = ASDSASDAPlayer(), id = ASDSASDAGetId(me, "");
-      if (id !== "" && id !== undefined && id !== null) ASDSASDA_MOD.PlayerId = String(id);
-    } catch (e) {}
-  }, 500);
 
   window.ASDSASDA_MOD = ASDSASDA_MOD;
   // ========== END ASDSASDA MOD ==========
